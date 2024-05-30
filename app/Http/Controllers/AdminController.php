@@ -8,6 +8,8 @@ use App\Models\food;
 use App\Models\Order;
 use App\Models\User;
 use Exception;
+use Illuminate\Support\Facades\Auth;
+
 class AdminController extends Controller
 {
     public function foodMenu()
@@ -28,7 +30,7 @@ class AdminController extends Controller
         try{
             $food =food::all();
             $category = Category::all();
-            
+
             return view('admin.categorymenu',compact('food', 'category'));
     }catch(Exception $e){
         return redirect()->back()->with('error','Something went wrong');
@@ -88,13 +90,13 @@ class AdminController extends Controller
             $data->title=$request->title;
             $data->price=$request->price;
             $data->description=$request->description;
-            
+
             $data->save();
             return redirect()->back()->with('success','Item updated successfully');
         }catch(Exception $e){
             return redirect()->back()->with('error','Something went wrong');
         }
-        
+
     }
     public function updatecat(Request $request, $id)
     {
@@ -115,7 +117,7 @@ class AdminController extends Controller
     {
         try{
             $data= new food;
-            
+
             $image=$request->image;
             $imageName=time().'.'.$image->getClientOriginalExtension();
             $request->image->move('foodimage',$imageName);
@@ -149,12 +151,21 @@ class AdminController extends Controller
     public function orders()
     {
         $data =Order::all();
-        
+
         return view('admin.order',compact('data'));
     }
     public function users()
     {
         $data =User::orderBy('created_at', 'desc')->get();
         return view('admin.user',compact('data'));
+    }
+    public function adminlogout(Request $request){
+        Auth::logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/adminlog');
     }
 }

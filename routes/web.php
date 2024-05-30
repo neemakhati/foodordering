@@ -7,20 +7,8 @@ use App\Http\Controllers\CategoryController;
 Route::get('/',[HomeController::class, 'index']);
 Route::get('/about',[HomeController::class, 'about']);
 Route::get('/redirects', [HomeController::class, 'redirects']);
-
+Route::get('/logout', [HomeController::class, 'logout']);
 Route::get('/redirectsuser', [HomeController::class, 'redirectsuser']);
-//Route::get('/dashboard', function () {
-//    return redirect('/redirects');
-//})->name('dashboard');
-//Route::middleware([
-//    'auth:sanctum',
-//    config('jetstream.auth_session'),
-//    'verified',
-//])->group(function () {
-//    Route::get('/dashboard', function () {
-//        return redirect('/redirects');
-//    })->name('dashboard');
-//});
 Route::post('/addcart/{id}', [HomeController::class, 'addcart']);
 Route::get('/showcart/{id}', [HomeController::class, 'showcart']);
 Route::get('/deletecart/{id}', [HomeController::class, 'deletecart']);
@@ -52,10 +40,7 @@ Route::post('/uploadfood', [AdminController::class, 'upload']);
 Route::get('/deletefood/{id}', [AdminController::class, 'deletefood']);
 Route::get('/updateview/{id}', [AdminController::class, 'updateview']);
 Route::post('/update/{id}', [AdminController::class, 'update']);
-
-
-
-
+Route::get('/adminlogout',[AdminController::class,'adminlogout']);
 Route::get('/categoryMenu', [AdminController::class, 'categoryMenu']);
 Route::post('/uploadcategory', [AdminController::class, 'uploadcategory']);
 Route::get('/deletecategory/{id}', [AdminController::class, 'deletecategory']);

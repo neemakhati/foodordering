@@ -40,7 +40,7 @@
                             @if (Route::has('signin.form'))
                                 <nav>
                                     @auth
-                                        <x-app-layout></x-app-layout>
+                                        <a href="/logout" class="{{ Request::is('logout') ? 'active' : '' }}"> Logout</a>
                                     @else
                                         <a href="{{ route('signin.form') }}" class="{{ Request::is('signin') ? 'active' : '' }}">Log in</a>
                                     @endif

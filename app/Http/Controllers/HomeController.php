@@ -281,5 +281,15 @@ class HomeController extends Controller
         $count = Cart::where('user_id',$user_id)->count();
         return view("home",compact('data','count','categories'));
     }
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/');
+    }
 
 }

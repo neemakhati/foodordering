@@ -53,7 +53,7 @@
 
 <div>
     <div class="container">
-        <h2>Login</h2>
+        <h2>Admin Login</h2>
         <form action="/adminlog" method="post">
             @csrf
             <label for="adminemail">Email</label>
