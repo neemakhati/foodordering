@@ -12,26 +12,45 @@
 <title>Klassy Cafe - Restaurant HTML Template</title>
 
 @include('homecss')
-        
-        
+    <style>
+    </style>
+
     </head>
     <body>
-        @extends('homeheader')
+    <div style="min-height: 100vh; display: flex; flex-direction: column;">
+        <div style="flex: 1;">
+            @extends('homeheader')
 
-        <div style="margin:100px">
-            @foreach ($food as $data)
-            <div style="display: inline-block; margin: 10px; background-image: url('/foodimage/{{ $data->image }}'); background-size: cover; background-position: center; width: 200px; height: 300px; border-radius: 8px; position: relative;">
-                <div style="position: absolute; bottom: 0; background-color: rgba(255, 255, 255, 0.8); padding: 10px; border-radius: 0 0 8px 8px;">
-                    <h1 style="font-size: 18px; color: #333; margin: 0;">{{ $data->title }}</h1>
-                    <p style="font-size: 14px; color: #666; margin: 5px 0;">{{ $data->description }}</p>
-                    <div style="background-color: #ff9800; color: #fff; padding: 5px 10px; border-radius: 4px;">Rs. {{ $data->price }}</div>
+
+            <section class="section">
+                <div class="menu-item-carousel">
+                    <div class="col-lg-12">
+                        <div class="owl-menu-item owl-carousel owl-loaded owl-drag">
+                            @foreach ($food as $data)
+                                <div class="owl-item" style="height: 500px; width: 200px; margin: 20px 10px; ">
+                                    <div class="item" style="height: 500px; width: 200px; margin: 20px 10px; ">
+                                        <div class="card card2" style="background-image:url('/foodimage/{{ $data->image }}'); background-repeat: no-repeat; background-position: center; background-size: cover; width: 100%; height: 300px; overflow: hidden; position: relative;">
+                                            <button class="price" style="position: absolute; top: 60px; left: 0px; background-color: #fb5849; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; height: auto;">
+                                                {{ $data->price }}
+                                            </button>
+                                            <div class="info" style="margin-top: 75px;">
+                                                <h1 class="title">{{ $data->title }}</h1>
+                                                <p class="description">{{ $data->description }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
-            </div>
-            @endforeach
+            </section>
+        </div>
+        <div style="position: relative;text-align: center; margin-top: auto;">
+            @include('homefooter')
+        </div>
         </div>
 
-        
-        @include('homefooter')
         @include('homescripts')
 
   </body>

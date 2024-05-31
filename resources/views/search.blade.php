@@ -1,47 +1,21 @@
 <form id="searchForm">
     <input type="text" id="searchInput" name="query" placeholder="Search food..." style="color:black;">
 </form>
-<div id="searchResults" class="search-results-container"></div>
+<section class="section">
 
-<style>
-    .search-results-container {
-        position: absolute;
-        margin-top: 100px;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
+            <div class="owl-menu-item owl-carousel owl-loaded owl-drag" >
+                    <div class="owl-item">
+                        <div id="searchResults" class="search-results-container" style="height: 50px; width: 200px; margin: 20px 10px; "></div>
+                    </div>
+            </div>
 
-    .search-result {
-        background-color: #fb5849;
-        color: white;
-        padding: 20px;
-        margin: 10px;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease-in-out;
-    }
+</section>
 
-    .search-result:hover {
-        transform: translateY(-5px);
-    }
-
-    .search-result img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 5px;
-        margin-bottom: 10px;
-    }
-
-    .search-result p {
-        margin: 0;
-    }
-</style>
 
 
 <script>
 function searchFood(event) {
-    event.preventDefault(); 
+    event.preventDefault();
     var query = document.getElementById("searchInput").value;
 
     var req = new XMLHttpRequest();
@@ -52,7 +26,7 @@ function searchFood(event) {
                 var response = JSON.parse(req.responseText);
 
                 var searchResults = document.getElementById("searchResults");
-                searchResults.innerHTML = response.html; 
+                searchResults.innerHTML = response.html;
 
                 highlightMatchedLetters(query);
             } else {

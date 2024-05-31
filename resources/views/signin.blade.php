@@ -5,73 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-        }
         .container {
-            max-width: 350px;
-            margin: 50px auto;
+            width: 400px;
+            margin: 0 auto;
+            margin-top: 150px;
             padding: 20px;
-            background: #fff;
+            border: 1px solid #ccc;
             border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
         }
-        .container h2 {
+
+        h2 {
             text-align: center;
+            margin-bottom: 20px;
+            color: #fb5849;
         }
-        .container input[type="text"],
-        .container input[type="password"],
-        .container input[type="submit"] {
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="email"],
+        input[type="password"],
+        button {
             width: 100%;
             padding: 10px;
-            margin: 8px 0;
-            display: inline-block;
+            margin-bottom: 10px;
             border: 1px solid #ccc;
+            border-radius: 3px;
             box-sizing: border-box;
-            border-radius: 4px;
         }
-        .container input[type="submit"] {
-            background-color: #4CAF50;
+
+        button {
+            background-color: #fb5849;
             color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            border-radius: 4px;
+            font-size: 16px;
             cursor: pointer;
-            width: 100%;
         }
-        .container input[type="submit"]:hover {
-            background-color: #45a049;
+
+        button:hover {
+            background-color: #fb4433;
         }
+
+        /* Style the signup link */
         .signup-link {
             text-align: center;
         }
+
+        .signup-link a {
+            color: #fb5849;
+            text-decoration: none;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
     </style>
 </head>
 <body>
 
-<div>
-    <div class="container">
-        <h2>Login</h2>
-        <form action="/signin" method="post">
-            @csrf
-            <label for="loginemail">Email</label>
-            <input type="email" id="loginemail" name="loginemail" required>
+<div class="container">
+    <h2>Login</h2>
+    <form action="/signin" method="post">
+        @csrf
+        <label for="loginemail">Email</label>
+        <input type="email" id="loginemail" name="loginemail" required>
 
-            <label for="loginpassword">Password</label>
-            <input type="password" id="loginpassword" name="loginpassword" required>
+        <label for="loginpassword">Password</label>
+        <input type="password" id="loginpassword" name="loginpassword" required>
 
-            <button style="background-color: #4CAF50; color: white; padding: 5px 10px; border: none; border-radius: 3px; cursor: pointer; text-decoration: none; display: inline-block;">
-                Login
-            </button>
+        <button type="submit">Login</button>
 
-        </form>
-        <div class="signup-link">
-            <p>Don't have an account? <a href="/signup">Sign Up</a></p>
-        </div>
+    </form>
+    <div class="signup-link">
+        <p>Don't have an account? <a href="/signup">Sign Up</a></p>
     </div>
-
 </div>
+
 </body>
 </html>

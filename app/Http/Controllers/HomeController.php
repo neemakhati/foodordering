@@ -178,20 +178,29 @@ class HomeController extends Controller
         $query = $request->input('query');
         if ($query) {
             $foods = Food::where('title', 'like', '%' . $query . '%')->get();
-            $html = '';
+            $html = '<div  style="display: flex; flex-wrap: nowrap; ">';
             foreach ($foods as $food) {
-                $html .= '<div class="search-result" style="background-color: #dc3545; color: white; padding: 10px; margin: 10px; border-radius: 5px; display: flex; flex-direction: column; align-items: center;">';
-                $html .= '<img src="/foodimage/' . $food->image . '" alt="' . $food->title . '" style="width: 100px; height: auto;">';
-                $html .= '<p>' . $food->title . '</p>';
-                $html .= '<p>' . $food->price . '</p>';
-                $html .= '<p>' . $food->description . '</p>';
-                $html .= '</div>';
+                $html .= '<div class="owl-item" style="flex: 0 0 auto; width: 200px; margin: 0 10px;">';
+                $html .= '<div class="item">';
+                $html .= '<div class="card card2" style="background-image: url(\'/foodimage/' . $food->image . '\'); width: 100%; height: 300px; position: relative; overflow: hidden;">';
+                $html .= '<button class="price" style="position: absolute; top: 20px; left: 0px; background-color: #fb5849; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; height: auto;">' . $food->price . '</button>';
+                $html .= '<div class="info" style="margin-top: 75px;">';
+                $html .= '<h1 class="title">' . $food->title . '</h1>';
+                $html .= '<p class="description">' . $food->description . '</p>';
+                $html .= '</div></div></div></div>';
             }
+            $html .= '</div>'; // End the div for the owl carousel
+
             return response()->json(['html' => $html]);
         } else {
             return response()->json(['html' => '']);
         }
     }
+
+
+
+
+
     public function showSignupForm()
     {
         return view('signup');

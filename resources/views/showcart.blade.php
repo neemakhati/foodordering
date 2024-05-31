@@ -15,29 +15,29 @@
 @extends('homeheader')
 
 <div id="top">
-    <table align="center" width="500px">
+    <table align="center" width="500px" style="border: 1px solid #fb5849;">
         <tr>
             <!-- <th style="padding:30px;">Image</th> -->
-            <th style="color: #fb5849; padding:30px;">Title</th>
-            <th style="color: #fb5849;padding:30px;">Price</th>
-            <th style="color: #fb5849;padding:30px;">Quantity</th>
-            <th style="color: #fb5849;padding:30px;">Action</th>
+            <th style="border: 1px solid #fb5849; color: #fb5849; padding:30px;">Title</th>
+            <th style="border: 1px solid #fb5849;color: #fb5849;padding:30px;">Price</th>
+            <th style="border: 1px solid #fb5849;color: #fb5849;padding:30px;">Quantity</th>
+            <th style="border: 1px solid #fb5849;color: #fb5849;padding:30px;">Action</th>
             <!-- <th style="padding:30px;">Total</th> -->
         </tr>
         <form id="checkoutForm" action="{{ url('checkout') }}" method="post">
             @csrf
             @forelse ($cartItems as $cartItem)
                 <tr>
-                    <td style="padding:30px;">
+                    <td style="border: 1px solid #fb5849;padding:30px;">
                         <input type="text" name="name[]" value="{{ $cartItem->food->title }}" hidden>
                         {{ $cartItem->food->title }}</td>
-                    <td style="padding:30px;">
+                    <td style="border: 1px solid #fb5849;padding:30px;">
                         <input type="text" name="price[]" value="{{ $cartItem->food->price }}" hidden>
                         {{ $cartItem->food->price }}</td>
-                    <td style="padding:30px;">
+                    <td style="border: 1px solid #fb5849;padding:30px;">
                         <input type="number" name="quantity[]" value="{{ $cartItem->quantity }}" min="1" style="width: 60px; text-align: center;">
                     </td>
-                    <td style="padding:30px;">
+                    <td style="border: 1px solid #fb5849;padding:30px;">
                         <a href="{{ url('deletecart', $cartItem->id) }}" class="remove-item" style='color: #fb5849;'>Remove</a>
                     </td>
                 </tr>
