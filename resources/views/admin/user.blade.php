@@ -1,37 +1,76 @@
-<x-app-layout>
 
-</x-app-layout>
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-  @include('admin.admincss')
-  </head>
-  <body>
-    <div class="container-scroller">
-        @include('admin.navbar')
-        <div style="margin:100px; max-width: 600px;">
-    <table style="border-collapse: collapse; width: 100%; border: 1px solid #ddd; background-color: #333; color: #fff; text-align: center;">
-        <thead>
+<head>
+    @include('admin.admincss')
+    <style>
+        table {
+            width: 500px;
+            border-collapse: collapse;
+            margin-left: 100px;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 20px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #d5bcbc;
+            color: #333;
+        }
+        tr:nth-child(even) {
+            background-color: #453636;
+        }
+        tr:hover{
+            background-color: #9c7b7b;
+        }
+        .action-links a {
+            color: #e4e9ed;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+        .action-links a:hover {
+            text-decoration: underline;
+        }
+        .user-table-container {
+            margin: 100px;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+<div class="container-scroller">
+    @include('admin.navbar')
+    <div class="user-table-container">
+        <table>
+            <thead>
             <tr>
-                <th style="padding: 8px; background-color: #222; border-bottom: 1px solid #ddd;">User ID</th>
-                <th style="padding: 8px; background-color: #222; border-bottom: 1px solid #ddd;">Username</th>
-                <th style="padding: 8px; background-color: #222; border-bottom: 1px solid #ddd;">Email</th>
+                <th>User ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Action</th>
+                <th>Change</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             @foreach ($data as $index => $user)
                 <tr>
-                    <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ $index + 1 }}</td>
-                    <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ $user->name }}</td>
-                    <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ $user->email }}</td>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $user->name }}</td>
+                    <td>{{ $user->email }}</td>
+                    <td class="action-links">
+                        <a href="{{url('/deleteuser', $user->id)}}">Delete</a>
+                    </td>
+                    <td class="action-links">
+                        <a href="{{url('/updateuser', $user->id)}}">Update</a>
+                    </td>
                 </tr>
-             @endforeach
-        </tbody>
-    </table>
-
-
-
+            @endforeach
+            </tbody>
+        </table>
     </div>
-    @include('admin.adminscript')
-  </body>
+</div>
+@include('admin.adminscript')
+</body>
 </html>

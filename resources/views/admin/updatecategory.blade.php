@@ -1,6 +1,4 @@
-<x-app-layout>
 
-</x-app-layout>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -21,7 +19,7 @@
 
                <label for="status">Status:</label><br>
                 <input style="color: black;" type="text" id="status" name="status" value="{{$data->status}}"required><br><br>
-                <input style="color:white;" type="submit" value="Submit"></div>
+                <input style=" background-color: whitesmoke; padding: 5px; color:black;" type="submit" value="Submit"></div>
             </form>
         </div>
     </div>

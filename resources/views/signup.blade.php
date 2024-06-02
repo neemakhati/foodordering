@@ -52,12 +52,12 @@
             text-align: center;
         }
 
-        .signup-link a {
+        .signin-link a {
             color: #fb5849;
             text-decoration: none;
         }
 
-        .signup-link a:hover {
+        .signin-link a:hover {
             text-decoration: underline;
         }
 

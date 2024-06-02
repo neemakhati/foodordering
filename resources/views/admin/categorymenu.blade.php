@@ -1,62 +1,86 @@
-<x-app-layout>
-
-</x-app-layout>
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     @include('admin.admincss')
-  </head>
-  <body>
-    <div class="container-scroller">
-        @include('admin.navbar')
-        <div style="position:relative; top:60px; right:-150px;">
-            <form action="{{url('/uploadcategory')}}" method="post" enctype="multipart/form-data">
-                @csrf
-                <label for="name">Name:</label><br>
-                <input style="color: black;" type="text" id="name" name="name" required><br><br>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 20px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #d5bcbc;
+            color: #333;
+        }
+        tr:nth-child(even) {
+            background-color: #453636;
+        }
+        tr:hover:not(:first-child) {
+            background-color: #9c7b7b;
+        }
+        .action-links a {
+            color: #e4e9ed;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+        .action-links a:hover {
+            text-decoration: underline;
+        }
+        .lower-table-container {
+            margin-top: 420px;
+            margin-left: -50px;
+        }
+    </style>
+</head>
+<body>
+<div class="container-scroller">
+    @include('admin.navbar')
+    <div style="position:relative; top:60px; right:-150px;">
+        <form action="{{url('/uploadcategory')}}" method="post" enctype="multipart/form-data">
+            @csrf
+            <label for="name">Name:</label><br>
+            <input style="color: black;" type="text" id="name" name="name" required><br><br>
 
-                <label for="slug">Slug:</label><br>
-                <input style="color: black;" type="text" name="slug" required><br><br>
+            <label for="slug">Slug:</label><br>
+            <input style="color: black;" type="text" name="slug" required><br><br>
 
-                <label for="status">Status:</label><br>
-                <textarea style="color: black;" name="status"required></textarea><br><br>
+            <label for="status">Status:</label><br>
+            <textarea style="color: black;" name="status"required></textarea><br><br>
 
-                <input style="color:white;" type="submit" value="Submit"></div>
-            </form>
-        </div>
-        <div style="position:relative; top:-250px; right:-400px;">
-              <table bgcolor="black">
-                <tr>
-                  <th style="padding: 30px;"> Name</th>
-                  <th style="padding: 30px;"> Slug</th>
-                  <th style="padding: 30px;"> Status</th>
-                  <th style="padding: 30px;"> Action</th>
-                  <th style="padding: 30px;"> Change</th>
-                </tr>
-                @foreach($category as $cat)
-                <tr align="center">
-                  <td>{{$cat->name}}</td>
-                  <td>{{$cat->slug}}</td>
-                  <td>
-                      @if($cat->status == 1)
-        Active
-                      @else
-        Inactive
-                      @endif
-                  </td>
-
-                  <td>
-                    <a href="{{url('/deletecategory', $cat->id)}}">Delete</a>
-                  </td>
-                  <td>
-                    <a href="{{url('/updatecategory', $cat->id)}}">Update</a>
-                  </td>
-                </tr>
-                @endforeach
-              </table>
-            </div>
+            <input style="background-color: whitesmoke; padding: 5px; color:black;" type="submit" value="Submit">
+        </form>
     </div>
-    @include('admin.adminscript')
-  </body>
+    <div class="lower-table-container">
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Slug</th>
+                <th>Status</th>
+                <th>Action</th>
+                <th>Change</th>
+            </tr>
+            @foreach($category as $cat)
+                <tr>
+                    <td>{{$cat->name}}</td>
+                    <td>{{$cat->slug}}</td>
+                    <td>{{$cat->status == 1 ? 'Active' : 'Inactive'}}</td>
+                    <td class="action-links">
+                        <a href="{{url('/deletecategory', $cat->id)}}">Delete</a>
+                    </td>
+                    <td class="action-links">
+                        <a href="{{url('/updatecategory', $cat->id)}}">Update</a>
+                    </td>
+                </tr>
+            @endforeach
+        </table>
+    </div>
+</div>
+@include('admin.adminscript')
+</body>
 </html>
