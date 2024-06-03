@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="admin/assets/vendors/css/vendor.bundle.base.css">
 <!-- endinject -->
 <!-- Plugin css for this page -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="admin/assets/vendors/jvectormap/jquery-jvectormap.css">
 <link rel="stylesheet" href="admin/assets/vendors/flag-icon-css/css/flag-icon.min.css">
 <link rel="stylesheet" href="admin/assets/vendors/owl-carousel-2/owl.carousel.min.css">

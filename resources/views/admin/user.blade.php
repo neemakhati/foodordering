@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     @include('admin.admincss')
     <style>
         table {
@@ -50,7 +51,7 @@
                 <th>Username</th>
                 <th>Email</th>
                 <th>Action</th>
-                <th>Change</th>
+{{--                <th>Change</th>--}}
             </tr>
             </thead>
             <tbody>
@@ -60,11 +61,11 @@
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
                     <td class="action-links">
-                        <a href="{{url('/deleteuser', $user->id)}}">Delete</a>
+                        <a href="{{ url('/deleteuser', $user->id) }}">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
                     </td>
-                    <td class="action-links">
-                        <a href="{{url('/updateuser', $user->id)}}">Update</a>
-                    </td>
+
                 </tr>
             @endforeach
             </tbody>

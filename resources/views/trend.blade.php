@@ -4,7 +4,8 @@
             <div class="row">
                 <div class="col-lg-4">
                     <div class="section-heading">
-                        <h2>Trending Foods</h2>
+                        <h6>Trending Menu</h6>
+                        <h2>Trending food with quality taste</h2>
                     </div>
                 </div>
             </div>
@@ -33,7 +34,7 @@
                         </form>
                     @endif
                     @endforeach
-                    
+
                 </div>
             </div>
         </div>

@@ -71,10 +71,10 @@
                     <td>{{$cat->slug}}</td>
                     <td>{{$cat->status == 1 ? 'Active' : 'Inactive'}}</td>
                     <td class="action-links">
-                        <a href="{{url('/deletecategory', $cat->id)}}">Delete</a>
+                        <a href="{{url('/deletecategory', $cat->id)}}"><i class="fas fa-trash-alt"></i></a>
                     </td>
                     <td class="action-links">
-                        <a href="{{url('/updatecategory', $cat->id)}}">Update</a>
+                        <a href="{{url('/updatecategory', $cat->id)}}"><i class="fas fa-edit"></i></a>
                     </td>
                 </tr>
             @endforeach

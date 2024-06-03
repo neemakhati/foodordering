@@ -150,7 +150,7 @@ class AdminController extends Controller
     }
     public function orders()
     {
-        $data =Order::all();
+        $data = Order::orderBy('created_at', 'desc')->simplePaginate(10);
 
         return view('admin.order',compact('data'));
     }
@@ -167,5 +167,27 @@ class AdminController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/adminlog');
+    }
+    public function deleteUser($id)
+    {
+        $user = User::find($id);
+        if ($user) {
+            $user->delete();
+            return redirect()->route('users')->with('success', 'User deleted successfully.');
+        } else {
+            return redirect()->route('users')->with('error', 'User not found.');
+        }
+    }
+    public function showAddFoodForm()
+    {
+        try{
+            $food =food::all();
+            $category = Category::all();
+
+            return view('admin.addfood',compact('food', 'category'));
+        }
+        catch(Exception $e){
+            return redirect()->back();
+        }
     }
 }

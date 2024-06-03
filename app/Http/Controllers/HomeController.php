@@ -43,7 +43,7 @@ class HomeController extends Controller
         }
         Mail::send('emails.order', $emailContent, function ($message) {
             $message->to('neemakhati11@gmail.com')
-                    ->subject('New Order Confirmation');
+                ->subject('New Order Confirmation');
         });
         return redirect()->back()->with('success', 'Order placed successfully!');
     }
@@ -101,7 +101,7 @@ class HomeController extends Controller
                 $cart->status=$status;
                 $cart->save();
 
-                return redirect()->back()->with('success','Item added to cart');
+                return redirect()->back()->with('success','Added!');
 
             }
             else{
@@ -143,7 +143,7 @@ class HomeController extends Controller
             $cartItems = $user->carts;
 
             $order = new Order();
-            $order->username = $user->name;
+            $order->username = $request->input('firstname');
             $order->phone = $request->input('phone');
             $order->address = $request->input('address');
             $order->status = 'ordered';

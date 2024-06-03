@@ -52,6 +52,9 @@
     </div>
     <div id="appear" align="center" style="padding: 20px; display: none; border: 1px solid #ccc; background-color: #fb5849; border-radius: 5px; max-width: 300px; margin: 0 auto;">
         <div style="margin-bottom: 10px;">
+            <input type="text" name="firstname" placeholder="Enter Name" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
+        </div>
+        <div style="margin-bottom: 10px;">
             <input type="text" name="address" placeholder="Enter Address" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
         </div>
         <div style="margin-bottom: 10px;">
@@ -135,8 +138,9 @@
         });
     });
 </script>
-
-@include('homefooter')
+<div style="position: relative; margin-top:250px; width: 100%">
+    @include('homefooter')
+</div>
 @include('homescripts')
 
 </body>

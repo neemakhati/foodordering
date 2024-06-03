@@ -51,9 +51,9 @@
             </tr>
             </thead>
             <tbody>
-            @foreach ($data as $order)
+            @foreach ($data as $index => $order)
                 <tr>
-                    <td>{{ $order->id }}</td>
+                    <td>{{ $index+1 }}</td>
                     <td>{{ $order->username }}</td>
                     <td>{{ $order->phone }}</td>
                     <td>{{ $order->address }}</td>

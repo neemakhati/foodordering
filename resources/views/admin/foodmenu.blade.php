@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,43 +67,36 @@
         /* Adjusted positioning for the lower table */
         .table-container {
             position: relative;
-            top: 120px;
+            top: 20px;
             right: -40px; /* Adjusted right position */
-            height: 2000px;
+            height: auto; /* Adjusted height */
+        }
+        /* Style for the add button */
+        .add-button-container {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        .add-button-container button {
+            background-color: white;
+            color: black;
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .add-button-container button:hover {
+            background-color: #f2f2f2;
         }
     </style>
 </head>
 <body>
 <div class="container-scroller">
     @include('admin.navbar')
-    <div class="form-container">
-        <form action="{{url('/uploadfood')}}" method="post" enctype="multipart/form-data">
-            @csrf
-            <label for="title">Title:</label><br>
-            <input type="text" id="title" name="title" required><br>
-
-            <label for="price">Price:</label><br>
-            <input type="number" id="price" name="price" min="0" step="1" required><br>
-
-            <label for="image">Image:</label><br>
-            <input type="file" id="image" name="image" onchange="displayImage(this)" required><br>
-            <img id="imagePreview" src="#" alt="Selected Image"><br>
-
-            <select class="custom-select" id="inputGroupSelect04" name="categories_id">
-                <option selected>Category</option>
-                @foreach ($category as $cat)
-                    <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                @endforeach
-            </select><br>
-
-            <label for="description">Description:</label><br>
-            <textarea id="description" name="description" rows="2" cols="20" required></textarea><br>
-
-            <input type="submit" value="Submit">
-        </form>
-    </div>
 
     <div class="table-container">
+        <div class="add-button-container">
+            <button onclick="window.location.href='{{ url('/addfood') }}'"> <i class="fas fa-plus"></i> </button>
+        </div>
         <table>
             <tr>
                 <th>Title</th>
@@ -127,16 +119,19 @@
                     @endif
                     <td><img src="/foodimage/{{$food->image}}"></td>
                     <td>
-                        <a href="{{url('/deletefood', $food->id)}}">Delete</a>
+                        <a href="{{url('/deletefood', $food->id)}}" style="color: white; padding: 10px;">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
                     </td>
                     <td>
-                        <a href="{{url('/updateview', $food->id)}}">Update</a>
+                        <a href="{{url('/updateview', $food->id)}}" style="color: white; padding: 10px;"><i class="fas fa-edit"></i></a>
                     </td>
                 </tr>
             @endforeach
         </table>
     </div>
 </div>
+
 @include('admin.adminscript')
 <script>
     function displayImage(input) {
