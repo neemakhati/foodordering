@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -139,7 +140,7 @@ class AdminController extends Controller
         try{
             $data= new category;
             $data->name=$request->name;
-            $data->slug=$request->slug;
+            $data->slug=Str::slug($request->name);
             $data->status=$request->status;
 
             $data->save();

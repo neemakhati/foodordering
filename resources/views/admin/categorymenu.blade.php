@@ -47,11 +47,15 @@
             <label for="name">Name:</label><br>
             <input style="color: black;" type="text" id="name" name="name" required><br><br>
 
-            <label for="slug">Slug:</label><br>
-            <input style="color: black;" type="text" name="slug" required><br><br>
+            <label for="status">Status:</label><br><br>
 
-            <label for="status">Status:</label><br>
-            <textarea style="color: black;" name="status"required></textarea><br><br>
+            <!-- Active radio button -->
+            <input type="radio" id="active" name="status" value="1" required>
+            <label for="active">Active</label><br>
+
+            <!-- Inactive radio button -->
+            <input type="radio" id="inactive" name="status" value="0">
+            <label for="inactive">Inactive</label><br><br>
 
             <input style="background-color: whitesmoke; padding: 5px; color:black;" type="submit" value="Submit">
         </form>
