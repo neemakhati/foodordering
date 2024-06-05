@@ -10,10 +10,10 @@
             justify-content: center;
             list-style-type: none;
             padding: 0;
-            margin: 20px 0;
+            margin: 20px;
         }
         .pagination li {
-            margin: 0 5px;
+            margin: 10px 5px;
         }
         .pagination li a, .pagination li span {
             display: inline-block;
@@ -159,6 +159,7 @@
         <table>
             <thead>
             <tr>
+{{--                <th>Ssn.</th>--}}
                 <th>Title</th>
                 <th>Price</th>
                 <th>Description</th>
@@ -169,8 +170,9 @@
             </tr>
             </thead>
             <tbody>
-            @foreach($food as $item)
+            @foreach($food as $index=> $item)
                 <tr align="center">
+{{--                    <td>{{ $index + 1 + ($food->currentPage() - 1) * $food->perPage() }}</td>--}}
                     <td>{{$item->title}}</td>
                     <td>{{$item->price}}</td>
                     <td>{{$item->description}}</td>

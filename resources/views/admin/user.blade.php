@@ -85,7 +85,7 @@
             <tbody>
             @foreach ($data as $index => $user)
                 <tr>
-                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $index + 1 + ($data->currentPage() - 1) * $data->perPage() }}</td>
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
                     <td class="action-links">
