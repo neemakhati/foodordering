@@ -99,7 +99,7 @@
             @if ($data->hasPages())
                 <nav>
                     <ul class="pagination">
-                        {{-- Previous Page Link --}}
+
                         @if ($data->onFirstPage())
                             <li class="disabled" aria-disabled="true">
                                 <span>Previous</span>
@@ -110,7 +110,6 @@
                             </li>
                         @endif
 
-                        {{-- Next Page Link --}}
                         @if ($data->hasMorePages())
                             <li>
                                 <a href="{{ $data->nextPageUrl() }}" rel="next">Next</a>

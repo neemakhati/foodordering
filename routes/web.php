@@ -35,8 +35,9 @@ Route::post('/adminlog',[HomeController::class,'adminlog'])->name('adminsignin')
 Route::get('/adminlog', [HomeController::class, 'adminshowSigninForm'])->name('adminsignin.form');
 
 
-Route::get('/foodMenu', [AdminController::class, 'foodMenu']);
-Route::post('/uploadfood', [AdminController::class, 'upload']);
+
+
+
 Route::get('/deletefood/{id}', [AdminController::class, 'deletefood']);
 Route::get('/updateview/{id}', [AdminController::class, 'updateview']);
 Route::post('/update/{id}', [AdminController::class, 'update']);
@@ -49,4 +50,11 @@ Route::post('/updatecat/{id}', [AdminController::class, 'updatecat']);
 Route::get('/orders', [AdminController::class,'orders']);
 Route::get('/users', [AdminController::class,'users'])->name('users');
 Route::get('/deleteuser/{id}', [AdminController::class, 'deleteUser'])->name('deleteuser');
+
 Route::get('/addfood', [AdminController::class, 'showAddFoodForm']);
+
+Route::post('/uploadfood', [AdminController::class, 'upload'])->name('uploadfood');
+
+
+Route::get('/foodMenu', [AdminController::class, 'foodMenu']);
+Route::post('/foodMenu', [AdminController::class, 'foodMenu']);

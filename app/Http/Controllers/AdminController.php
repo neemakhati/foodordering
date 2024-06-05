@@ -16,7 +16,7 @@ class AdminController extends Controller
     public function foodMenu()
     {
         try{
-            $food =food::all();
+            $food =food::orderBy('created_at', 'desc')->simplePaginate(10);
             $category = Category::all();
 
             return view('admin.foodmenu',compact('food', 'category'));
@@ -114,27 +114,58 @@ class AdminController extends Controller
             return redirect()->back()->with('error','Something went wrong');
         }
     }
+
     public function upload(Request $request)
     {
-        try{
-            $data= new food;
+        try {
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'price' => 'required|numeric|min:0',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'categories_id' => 'required|exists:categories,id',
+                'description' => 'required|string',
+            ]);
 
-            $image=$request->image;
-            $imageName=time().'.'.$image->getClientOriginalExtension();
-            $request->image->move('foodimage',$imageName);
-            $data->image=$imageName;
-            $data->title=$request->title;
-            $data->price=$request->price;
-            $data->description=$request->description;
+            $food = new Food();
+            $food->title = $request->title;
+            $food->price = $request->price;
+            $food->description = $request->description;
+            $food->categories_id = $request->categories_id;
 
-            $data->categories_id=$request->categories_id;
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time().'.'.$image->extension();
+                $image->move(public_path('foodimage'), $imageName);
+                $food->image = $imageName;
+            }
 
-            $data->save();
-            return redirect()->back()->with('success','Item uploaded successfully');
-        }catch(Exception $e){
-            return redirect()->back()->with('error','Something went wrong');
+            $food->save();
+
+            $categoryName = $food->cat ? $food->cat->name : 'No Category';
+
+            return response()->json([
+                'item' => [
+                    'id' => $food->id,
+                    'title' => $food->title,
+                    'price' => $food->price,
+                    'description' => $food->description,
+                    'category_name' => $categoryName,
+                    'image' => $food->image,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error uploading food item: ' . $e->getMessage());
+
+            return response()->json([
+                'error' => 'There was an error uploading the food item. Please try again later.',
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
+
+
+
+
     public function uploadcategory(Request $request)
     {
         try{
@@ -157,7 +188,7 @@ class AdminController extends Controller
     }
     public function users()
     {
-        $data =User::orderBy('created_at', 'desc')->get();
+        $data =User::orderBy('created_at', 'desc')->simplePaginate(10);
         return view('admin.user',compact('data'));
     }
     public function adminlogout(Request $request){
