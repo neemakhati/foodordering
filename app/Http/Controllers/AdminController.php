@@ -16,7 +16,7 @@ class AdminController extends Controller
     public function foodMenu()
     {
         try{
-            $food =food::orderBy('created_at', 'desc')->simplePaginate(10);
+            $food =Food::orderBy('created_at', 'desc')->paginate(8);
             $category = Category::all();
 
             return view('admin.foodmenu',compact('food', 'category'));
@@ -26,6 +26,40 @@ class AdminController extends Controller
         }
     }
 
+    public function fetchFoodItems()
+    {
+        $food = Food::with(['cat:id,name'])->get();
+        return response()->json(['food' => $food]);
+    }
+
+    // Method to upload food
+    public function uploadFood(Request $request)
+    {
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'title' => 'required|string',
+            'price' => 'required|numeric',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'categories_id' => 'required|exists:categories,id',
+            'description' => 'required|string',
+        ]);
+
+        // Handle file upload
+        $imageName = time().'.'.$request->image->extension();
+        $request->image->move(public_path('foodimage'), $imageName);
+
+        // Create a new food item
+        $food = new Food;
+        $food->title = $validatedData['title'];
+        $food->price = $validatedData['price'];
+        $food->image = $imageName;
+        $food->categories_id = $validatedData['categories_id'];
+        $food->description = $validatedData['description'];
+        $food->save();
+
+        // Return JSON response
+        return response()->json(['status' => 'success', 'message' => 'Food item uploaded successfully', 'item' => $food]);
+    }
     public function categoryMenu()
     {
         try{
@@ -33,10 +67,11 @@ class AdminController extends Controller
             $category = Category::all();
 
             return view('admin.categorymenu',compact('food', 'category'));
-    }catch(Exception $e){
-        return redirect()->back()->with('error','Something went wrong');
+        }catch(Exception $e){
+            return redirect()->back()->with('error','Something went wrong');
+        }
     }
-    }
+
     public function deletefood($id)
     {
         try{
@@ -176,9 +211,9 @@ class AdminController extends Controller
 
             $data->save();
             return redirect()->back()->with('success','Item uploaded successfully');
-    }catch(Exception $e){
-        return redirect()->back()->with('error','Something went wrong');
-    }
+        }catch(Exception $e){
+            return redirect()->back()->with('error','Something went wrong');
+        }
     }
     public function orders()
     {

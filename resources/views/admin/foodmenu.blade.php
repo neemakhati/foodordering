@@ -115,7 +115,7 @@
 <div class="container-scroller">
     @include('admin.navbar')
     <div class="table-container">
-        <button type="button" class="add-button-container" data-toggle="modal" data-target="#exampleModal">
+        <button type="button" class="add-food-button-container" data-toggle="modal" data-target="#exampleModal">
             <i class="fas fa-plus"></i>
         </button>
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -128,16 +128,18 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form id="food_form" action="/uploadfood" method="post" enctype="multipart/form-data">
+                        <form id="food_form" enctype="multipart/form-data">
                             @csrf
                             <label for="title">Title:</label><br>
                             <input type="text" id="title" name="title" required><br>
                             <label for="price">Price:</label><br>
                             <input type="number" id="price" name="price" min="0" step="1" required><br>
+
+
                             <label for="image">Image:</label><br>
                             <input type="file" id="image" name="image" onchange="displayImage(this)" required><br>
                             <img id="imagePreview" src="#" alt="Selected Image"><br>
-                            <select class="custom-select" id="inputGroupSelect04" name="categories_id">
+                            <select class="custom-select" id="categories_id" name="categories_id">
                                 <option selected>Category</option>
                                 @foreach ($category as $cat)
                                     <option value="{{ $cat->id }}">{{ $cat->name }}</option>
@@ -146,10 +148,10 @@
                             <label for="description">Description:</label><br>
                             <textarea id="description" name="description" rows="2" cols="20" required></textarea><br>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary ms-auto" id="company_form_btn">
+                                <button type="submit" class="btn btn-primary ms-auto add-food-submit" id="food_form_btn">
                                     Save
                                 </button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close_modal_btn">Close</button>
                             </div>
                         </form>
                     </div>
@@ -159,7 +161,7 @@
         <table>
             <thead>
             <tr>
-{{--                <th>Ssn.</th>--}}
+                {{--                <th>Ssn.</th>--}}
                 <th>Title</th>
                 <th>Price</th>
                 <th>Description</th>
@@ -172,7 +174,7 @@
             <tbody>
             @foreach($food as $index=> $item)
                 <tr align="center">
-{{--                    <td>{{ $index + 1 + ($food->currentPage() - 1) * $food->perPage() }}</td>--}}
+                    {{--                    <td>{{ $index + 1 + ($food->currentPage() - 1) * $food->perPage() }}</td>--}}
                     <td>{{$item->title}}</td>
                     <td>{{$item->price}}</td>
                     <td>{{$item->description}}</td>
@@ -219,45 +221,97 @@
 @include('admin.adminscript')
 
 <script>
-    $(document).ready(function() {
-        $('#food_form').submit(function(e) {
+    $(document).ready(function () {
+
+
+        fetchFoodItems();
+
+        function fetchFoodItems() {
+            $.ajax({
+                type: "GET",
+                url: "/fetch-food-items",
+                dataType: "json",
+                success: function (response) {
+                    console.log("Fetched food items:", response.food); // Debugging
+                    $('tbody').html("");
+                    $.each(response.food, function (key, item) {
+                        appendFoodItemToTable(item);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching food items:", error); // Debugging
+                }
+            });
+        }
+
+        $('#exampleModal').on('hidden.bs.modal', function () {
+            $('#success_message').removeClass('alert alert-success').text('');
+        });
+
+        $(document).on('click', '#close_modal_btn', function() {
+            $('#success_message').removeClass('alert alert-success').text('');
+        });
+        $(document).on('click', '.add-food-submit', function (e) {
             e.preventDefault();
 
-            var formData = new FormData($(this)[0]);
+            $(this).text('Sending..');
+
+            var formData = new FormData($('#food_form')[0]);
+
             $.ajax({
-                url: $(this).attr('action'),
-                type: $(this).attr('method'),
+                type: "POST",
+                url: "/uploadfood",
                 data: formData,
                 async: false,
                 cache: false,
                 contentType: false,
                 processData: false,
-                success: function(response) {
-                    var newItem = response.item;
-                    console.log("New item added: ", newItem);
-                    var newRow = "<tr align='center'>" +
-                        "<td>" + newItem.title + "</td>" +
-                        "<td>" + newItem.price + "</td>" +
-                        "<td>" + newItem.description + "</td>" +
-                        "<td>" + newItem.category_name + "</td>" +
-                        "<td><img src='/foodimage/" + newItem.image + "' width='100' height='100'></td>" +
-                        "<td><a href='/deletefood/" + newItem.id + "' style='color: white; padding: 10px;'><i class='fas fa-trash-alt'></i></a></td>" +
-                        "<td><a href='/updateview/" + newItem.id + "' style='color: white; padding: 10px;'><i class='fas fa-edit'></i></a></td>" +
-                        "</tr>";
-                    $("table tbody").prepend(newRow);
-                    $('#exampleModal').modal('hide');
-
-                    $('#food_form')[0].reset();
-                    $('#imagePreview').hide();
+                success: function (response) {
+                    if (response.status == 'success') {
+                        appendFoodItemToTable(response.item);
+                        $('#exampleModal').modal('hide');
+                        $('#food_form')[0].reset();
+                        $('#imagePreview').hide();
+                        $('#success_message').addClass('alert alert-success').text(response.message);
+                    } else {
+                        $('#save_msgList').html("").addClass('alert alert-danger');
+                        $.each(response.errors, function (key, err_value) {
+                            $('#save_msgList').append('<li>' + err_value + '</li>');
+                        });
+                    }
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     console.error("Error adding food item:", xhr.responseText);
                     alert('Error: ' + xhr.responseJSON.message);
+                },
+                complete: function () {
+                    $('.add-food-submit').text('Save');
                 }
             });
         });
-    });
 
+        function appendFoodItemToTable(item) {
+            console.log("Food item:", item);
+            var categoryName = '';
+            if (item.cat && item.cat.name) {
+                categoryName = item.cat.name;
+            }
+            console.log("Category name:", categoryName); // Debugging
+            $('tbody').prepend('<tr>\
+        <td>' + item.title + '</td>\
+        <td>' + item.price + '</td>\
+        <td>' + item.description + '</td>\
+        <td>' + categoryName + '</td>\
+        <td><img src="/foodimage/' + item.image + '" width="100" height="100"></td>\
+        <td><a href="/deletefood/' + item.id + '" style="color: white; padding: 10px;"><i class="fas fa-trash-alt"></i></a></td>\
+        <td><a href="/updateview/' + item.id + '" style="color: white; padding: 10px;"><i class="fas fa-edit"></i></a></td>\
+    </tr>');
+        }
+
+
+
+
+    })
     function displayImage(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
@@ -267,6 +321,7 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+
 
 </script>
 

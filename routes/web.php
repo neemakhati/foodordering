@@ -53,8 +53,15 @@ Route::get('/deleteuser/{id}', [AdminController::class, 'deleteUser'])->name('de
 
 Route::get('/addfood', [AdminController::class, 'showAddFoodForm']);
 
-Route::post('/uploadfood', [AdminController::class, 'upload'])->name('uploadfood');
-
+Route::post('/uploadfood', [AdminController::class, 'upload']);
 
 Route::get('/foodMenu', [AdminController::class, 'foodMenu']);
 Route::post('/foodMenu', [AdminController::class, 'foodMenu']);
+
+
+
+// Route to fetch food items
+Route::get('/fetch-food-items', [AdminController::class, 'fetchFoodItems']);
+
+// Route to upload food
+Route::post('/uploadfood', [AdminController::class, 'uploadFood']);
