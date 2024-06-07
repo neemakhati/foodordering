@@ -30,7 +30,6 @@ class AdminController extends Controller
         $food->categories_id = $request->categories_id;
         $food->save();
 
-        // Ensure the category relationship is loaded
         $food->load('cat');
 
         return response()->json(['status' => 'success', 'item' => $food]);
@@ -72,10 +71,10 @@ class AdminController extends Controller
         return response()->json(['food' => $food]);
     }
 
-    // Method to upload food
+
     public function uploadFood(Request $request)
     {
-        // Validate the incoming request data
+
         $validatedData = $request->validate([
             'title' => 'required|string',
             'price' => 'required|numeric',
@@ -84,11 +83,10 @@ class AdminController extends Controller
             'description' => 'required|string',
         ]);
 
-        // Handle file upload
         $imageName = time().'.'.$request->image->extension();
         $request->image->move(public_path('foodimage'), $imageName);
 
-        // Create a new food item
+
         $food = new Food;
         $food->title = $validatedData['title'];
         $food->price = $validatedData['price'];
@@ -98,7 +96,6 @@ class AdminController extends Controller
         $food->save();
         $food->load('cat');
 
-        // Return JSON response
         return response()->json(['status' => 'success', 'message' => 'Food item uploaded successfully', 'item' => $food]);
     }
     public function categoryMenu()

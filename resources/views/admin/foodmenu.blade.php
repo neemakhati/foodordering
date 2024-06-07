@@ -90,14 +90,16 @@
 <div class="container-scroller">
     @include('admin.navbar')
     <div class="table-container">
-        <button type="button" class="add-food-button-container" data-toggle="modal" data-target="#exampleModal">
+        <button type="button" class="add-food-button-container" id="foodModalBtn" data-toggle="modal" data-target="#foodModal">
             <i class="fas fa-plus"></i>
         </button>
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+
+        <div class="modal fade" id="foodModal" tabindex="-1" role="dialog" aria-labelledby="foodModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Add New Food Item</h5>
+                        <h5 class="modal-title" id="foodModalLabel">Add New Food Item</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -105,12 +107,13 @@
                     <div class="modal-body">
                         <form id="food_form" enctype="multipart/form-data">
                             @csrf
+                            <input type="hidden" id="food_id" name="food_id">
                             <label for="title">Title:</label><br>
                             <input type="text" id="title" name="title" required><br>
                             <label for="price">Price:</label><br>
                             <input type="number" id="price" name="price" min="0" step="1" required><br>
                             <label for="image">Image:</label><br>
-                            <input type="file" id="image" name="image" onchange="displayImage(this)" required><br>
+                            <input type="file" id="image" name="image" onchange="displayImage(this)"><br>
                             <img id="imagePreview" src="#" alt="Selected Image"><br>
                             <select class="custom-select" id="categories_id" name="categories_id">
                                 <option selected>Category</option>
@@ -121,14 +124,15 @@
                             <label for="description">Description:</label><br>
                             <textarea id="description" name="description" rows="2" cols="20" required></textarea><br>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary ms-auto add-food-submit" id="food_form_btn">Save</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close_modal_btn">Close</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" id="food_form_btn">Save</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+
         <table>
             <thead>
             <tr>
@@ -147,7 +151,7 @@
     </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
+
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -168,44 +172,6 @@
     </div>
 </div>
 
-<!-- Update Modal -->
-<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="updateModalLabel">Update Food Item</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="update_food_form" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" id="update_food_id" name="food_id">
-                    <label for="update_title">Title:</label><br>
-                    <input type="text" id="update_title" name="title" required><br>
-                    <label for="update_price">Price:</label><br>
-                    <input type="number" id="update_price" name="price" min="0" step="1" required><br>
-                    <label for="update_image">Image:</label><br>
-                    <input type="file" id="update_image" name="image" onchange="displayUpdateImage(this)"><br>
-                    <img id="update_imagePreview" src="#" alt="Selected Image"><br>
-                    <select class="custom-select" id="update_categories_id" name="categories_id">
-                        <option selected>Category</option>
-                        @foreach ($category as $cat)
-                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                        @endforeach
-                    </select><br>
-                    <label for="update_description">Description:</label><br>
-                    <textarea id="update_description" name="description" rows="2" cols="20" required></textarea><br>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 @include('admin.adminscript')
 
@@ -220,33 +186,65 @@
                 url: "/fetch-food-items",
                 dataType: "json",
                 success: function (response) {
-                    console.log("Fetched food items:", response.food); // Debugging
+                    console.log("Fetched food items:", response.food);
                     $('tbody').html("");
                     $.each(response.food, function (key, item) {
                         appendFoodItemToTable(item);
                     });
                 },
                 error: function (xhr, status, error) {
-                    console.error("Error fetching food items:", error); // Debugging
+                    console.error("Error fetching food items:", error);
                 }
             });
         }
 
-        $('#exampleModal').on('hidden.bs.modal', function () {
-            $('#success_message').removeClass('alert alert-success').text('');
+        $(document).on('click', '.add-food-button-container', function () {
+            $('#food_form')[0].reset();
+            $('#food_id').val('');
+            $('#imagePreview').hide();
+            $('#foodModalLabel').text('Add New Food Item');
+            $('#food_form_btn').text('Save');
+            $('#foodModalBtn').attr('data-mode', 'add');
+            $('#foodModal').modal('show');
         });
 
-        $(document).on('click', '#close_modal_btn', function() {
-            $('#success_message').removeClass('alert alert-success').text('');
-        });
-
-        $(document).on('click', '.add-food-submit', function (e) {
+        $(document).on('click', 'a[href^="/updateview/"]', function (e) {
             e.preventDefault();
-            $(this).text('Sending..');
-            var formData = new FormData($('#food_form')[0]);
+            var foodId = $(this).attr('href').split('/').pop();
+
             $.ajax({
-                type: "POST",
-                url: "/uploadfood",
+                type: 'GET',
+                url: '/fetch-food-item/' + foodId,
+                success: function (response) {
+                    var item = response.food;
+                    $('#food_id').val(item.id);
+                    $('#title').val(item.title);
+                    $('#price').val(item.price);
+                    $('#description').val(item.description);
+                    $('#imagePreview').attr('src', '/foodimage/' + item.image).show();
+                    $('#categories_id').val(item.categories_id);
+                    $('#foodModalLabel').text('Update Food Item');
+                    $('#food_form_btn').text('Save Changes');
+                    $('#foodModalBtn').attr('data-mode', 'update');
+                    $('#foodModal').modal('show');
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching food item:", error);
+                    alert('Error fetching food item: ' + error);
+                }
+            });
+        });
+
+        $(document).on('submit', '#food_form', function (e) {
+            e.preventDefault();
+            var formData = new FormData($(this)[0]);
+            var foodId = $('#food_id').val();
+            var url = foodId ? '/updatefood/' + foodId : '/uploadfood';
+            var method = foodId ? 'POST' : 'POST';
+
+            $.ajax({
+                type: method,
+                url: url,
                 data: formData,
                 async: false,
                 cache: false,
@@ -254,24 +252,21 @@
                 processData: false,
                 success: function (response) {
                     if (response.status == 'success') {
-                        appendFoodItemToTable(response.item);
-                        $('#exampleModal').modal('hide');
+                        if (foodId) {
+                            updateFoodItemInTable(response.item);
+                        } else {
+                            appendFoodItemToTable(response.item);
+                        }
+                        $('#foodModal').modal('hide');
                         $('#food_form')[0].reset();
                         $('#imagePreview').hide();
-                        $('#success_message').addClass('alert alert-success').text(response.message);
                     } else {
-                        $('#save_msgList').html("").addClass('alert alert-danger');
-                        $.each(response.errors, function (key, err_value) {
-                            $('#save_msgList').append('<li>' + err_value + '</li>');
-                        });
+                        alert('Error: ' + response.message);
                     }
                 },
-                error: function (xhr) {
-                    console.error("Error adding food item:", xhr.responseText);
-                    alert('Error: ' + xhr.responseJSON.message);
-                },
-                complete: function () {
-                    $('.add-food-submit').text('Save');
+                error: function (xhr, status, error) {
+                    console.error("Error adding/updating food item:", error);
+                    alert('Error: ' + error);
                 }
             });
         });
@@ -282,16 +277,28 @@
                 categoryName = item.cat.name;
             }
             $('tbody').prepend('<tr data-food-id="' + item.id + '">\
-                <td>' + item.title + '</td>\
-                <td>' + item.price + '</td>\
-                <td>' + item.description + '</td>\
-                <td>' + categoryName + '</td>\
-                <td><img src="/foodimage/' + item.image + '" width="100" height="100"></td>\
-                <td><a href="#" class="delete-food" data-food-id="' + item.id + '" style="color: white; padding: 10px;"><i class="fas fa-trash-alt"></i></a></td>\
-                <td><a href="/updateview/' + item.id + '" style="color: white; padding: 10px;"><i class="fas fa-edit"></i></a></td>\
-            </tr>');
+            <td>' + item.title + '</td>\
+            <td>' + item.price + '</td>\
+            <td>' + item.description + '</td>\
+            <td>' + categoryName + '</td>\
+            <td><img src="/foodimage/' + item.image + '" width="100" height="100"></td>\
+            <td><a href="#" class="delete-food" data-food-id="' + item.id + '" style="color: white; padding: 10px;"><i class="fas fa-trash-alt"></i></a></td>\
+            <td><a href="/updateview/' + item.id + '" style="color: white; padding: 10px;"><i class="fas fa-edit"></i></a></td>\
+        </tr>');
         }
 
+        function updateFoodItemInTable(item) {
+            var categoryName = '';
+            if (item.cat && item.cat.name) {
+                categoryName = item.cat.name;
+            }
+            var row = $('tr[data-food-id="' + item.id + '"]');
+            row.find('td').eq(0).text(item.title);
+            row.find('td').eq(1).text(item.price);
+            row.find('td').eq(2).text(item.description);
+            row.find('td').eq(3).text(categoryName);
+            row.find('img').attr('src', '/foodimage/' + item.image);
+        }
 
         $(document).on('click', '.delete-food', function (e) {
             e.preventDefault();
@@ -310,83 +317,15 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function (response) {
-                    console.log(response);
                     $('#deleteModal').modal('hide');
-                    $('tr[data-food-id="' + foodId + '"]').remove(); // Remove the table row
+                    $('tr[data-food-id="' + foodId + '"]').remove();
                 },
                 error: function (xhr, status, error) {
                     console.error("Error deleting food item:", error);
-                    // Handle errors
                 }
             });
         });
 
-
-
-        $(document).on('click', 'a[href^="/updateview/"]', function (e) {
-            e.preventDefault();
-            var foodId = $(this).attr('href').split('/').pop();
-
-            $.ajax({
-                type: 'GET',
-                url: '/fetch-food-item/' + foodId,
-                success: function (response) {
-                    var item = response.food;
-                    $('#update_food_id').val(item.id);
-                    $('#update_title').val(item.title);
-                    $('#update_price').val(item.price);
-                    $('#update_description').val(item.description);
-                    $('#update_imagePreview').attr('src', '/foodimage/' + item.image).show();
-                    $('#update_categories_id').val(item.categories_id);
-                    $('#updateModal').modal('show');
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error fetching food item:", error);
-                    alert('Error fetching food item: ' + error);
-                }
-            });
-        });
-
-        $(document).on('submit', '#update_food_form', function (e) {
-            e.preventDefault();
-            var formData = new FormData($(this)[0]);
-            var foodId = $('#update_food_id').val();
-
-            $.ajax({
-                type: 'POST',
-                url: '/updatefood/' + foodId,
-                data: formData,
-                async: false,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function (response) {
-                    if (response.status == 'success') {
-                        updateFoodItemInTable(response.item);
-                        $('#updateModal').modal('hide');
-                    } else {
-                        alert('Error: ' + response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error updating food item:", error);
-                    alert('Error updating food item: ' + error);
-                }
-            });
-        });
-
-        function updateFoodItemInTable(item) {
-            var categoryName = '';
-            if (item.cat && item.cat.name) {
-                categoryName = item.cat.name;
-            }
-            var row = $('tr[data-food-id="' + item.id + '"]');
-            row.find('td').eq(0).text(item.title);
-            row.find('td').eq(1).text(item.price);
-            row.find('td').eq(2).text(item.description);
-            row.find('td').eq(3).text(categoryName);
-            row.find('img').attr('src', '/foodimage/' + item.image);
-        }
     });
     function displayImage(input) {
         if (input.files && input.files[0]) {
