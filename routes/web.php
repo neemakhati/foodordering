@@ -65,3 +65,7 @@ Route::get('/fetch-food-items', [AdminController::class, 'fetchFoodItems']);
 
 // Route to upload food
 Route::post('/uploadfood', [AdminController::class, 'uploadFood']);
+Route::delete('/deletefood/{id}', [AdminController::class, 'destroy'])->name('deletefood');
+
+Route::get('/fetch-food-item/{id}', [AdminController::class, 'fetchFoodItem']);
+Route::post('/updatefood/{id}', [AdminController::class, 'updateFood']);

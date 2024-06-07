@@ -13,6 +13,29 @@ use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
+    public function updateFood(Request $request, $id)
+    {
+        $food = Food::findOrFail($id);
+        $food->title = $request->title;
+        $food->price = $request->price;
+        $food->description = $request->description;
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move('foodimage', $filename);
+            $food->image = $filename;
+        }
+
+        $food->categories_id = $request->categories_id;
+        $food->save();
+
+        // Ensure the category relationship is loaded
+        $food->load('cat');
+
+        return response()->json(['status' => 'success', 'item' => $food]);
+    }
+
     public function foodMenu()
     {
         try{
@@ -25,6 +48,23 @@ class AdminController extends Controller
             return redirect()->back();
         }
     }
+    public function destroy($id)
+    {
+        try {
+            $food = Food::findOrFail($id);
+            $food->delete();
+
+            return response()->json(['status' => 200, 'message' => 'Food item deleted successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 500, 'message' => 'Error deleting food item.']);
+        }
+    }
+    public function fetchFoodItem($id)
+    {
+        $food = Food::with('cat:id,name')->findOrFail($id);
+        return response()->json(['food' => $food]);
+    }
+
 
     public function fetchFoodItems()
     {
@@ -56,6 +96,7 @@ class AdminController extends Controller
         $food->categories_id = $validatedData['categories_id'];
         $food->description = $validatedData['description'];
         $food->save();
+        $food->load('cat');
 
         // Return JSON response
         return response()->json(['status' => 'success', 'message' => 'Food item uploaded successfully', 'item' => $food]);
@@ -72,16 +113,16 @@ class AdminController extends Controller
         }
     }
 
-    public function deletefood($id)
-    {
-        try{
-            $data=food::find($id);
-            $data->delete();
-            return redirect()->back()->with('success','Item deleted successfully');
-        }catch(Exception $e){
-            return redirect()->back()->with('error','Something went wrong');
-        }
-    }
+//    public function deletefood($id)
+//    {
+//        try{
+//            $data=food::find($id);
+//            $data->delete();
+//            return redirect()->back()->with('success','Item deleted successfully');
+//        }catch(Exception $e){
+//            return redirect()->back()->with('error','Something went wrong');
+//        }
+//    }
     public function deletecategory($id)
     {
         try{

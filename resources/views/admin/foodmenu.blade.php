@@ -5,34 +5,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     @include('admin.admincss')
     <style>
-        .pagination {
-            display: flex;
-            justify-content: center;
-            list-style-type: none;
-            padding: 0;
-            margin: 20px;
-        }
-        .pagination li {
-            margin: 10px 5px;
-        }
-        .pagination li a, .pagination li span {
-            display: inline-block;
-            padding: 10px 15px;
-            text-decoration: none;
-            color: #333;
-            background-color: #d5bcbc;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .pagination li a:hover {
-            background-color: #9c7b7b;
-        }
-        .pagination li.disabled span {
-            color: #999;
-            background-color: #f5f5f5;
-            border-color: #ddd;
-            cursor: not-allowed;
-        }
+
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -110,6 +84,7 @@
         }
 
     </style>
+
 </head>
 <body>
 <div class="container-scroller">
@@ -134,8 +109,6 @@
                             <input type="text" id="title" name="title" required><br>
                             <label for="price">Price:</label><br>
                             <input type="number" id="price" name="price" min="0" step="1" required><br>
-
-
                             <label for="image">Image:</label><br>
                             <input type="file" id="image" name="image" onchange="displayImage(this)" required><br>
                             <img id="imagePreview" src="#" alt="Selected Image"><br>
@@ -148,9 +121,7 @@
                             <label for="description">Description:</label><br>
                             <textarea id="description" name="description" rows="2" cols="20" required></textarea><br>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary ms-auto add-food-submit" id="food_form_btn">
-                                    Save
-                                </button>
+                                <button type="submit" class="btn btn-primary ms-auto add-food-submit" id="food_form_btn">Save</button>
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close_modal_btn">Close</button>
                             </div>
                         </form>
@@ -161,7 +132,6 @@
         <table>
             <thead>
             <tr>
-                {{--                <th>Ssn.</th>--}}
                 <th>Title</th>
                 <th>Price</th>
                 <th>Description</th>
@@ -172,57 +142,75 @@
             </tr>
             </thead>
             <tbody>
-            @foreach($food as $index=> $item)
-                <tr align="center">
-                    {{--                    <td>{{ $index + 1 + ($food->currentPage() - 1) * $food->perPage() }}</td>--}}
-                    <td>{{$item->title}}</td>
-                    <td>{{$item->price}}</td>
-                    <td>{{$item->description}}</td>
-                    <td>{{$item->cat ? $item->cat->name : ''}}</td>
-                    <td><img src="/foodimage/{{$item->image}}" width="100" height="100"></td>
-                    <td>
-                        <a href="{{url('/deletefood', $item->id)}}" style="color: white; padding: 10px;"><i class="fas fa-trash-alt"></i></a>
-                    </td>
-                    <td>
-                        <a href="{{url('/updateview', $item->id)}}" style="color: white; padding: 10px;"><i class="fas fa-edit"></i></a>
-                    </td>
-                </tr>
-            @endforeach
             </tbody>
         </table>
-        <div class="pagination-wrapper">
-            @if ($food->hasPages())
-                <nav>
-                    <ul class="pagination">
-                        @if ($food->onFirstPage())
-                            <li class="disabled" aria-disabled="true">
-                                <span>Previous</span>
-                            </li>
-                        @else
-                            <li>
-                                <a href="{{ $food->previousPageUrl() }}" rel="prev">Previous</a>
-                            </li>
-                        @endif
-                        @if ($food->hasMorePages())
-                            <li>
-                                <a href="{{ $food->nextPageUrl() }}" rel="next">Next</a>
-                            </li>
-                        @else
-                            <li class="disabled" aria-disabled="true">
-                                <span>Next</span>
-                            </li>
-                        @endif
-                    </ul>
-                </nav>
-            @endif
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Delete Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this food item?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
         </div>
     </div>
 </div>
+
+<!-- Update Modal -->
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateModalLabel">Update Food Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="update_food_form" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" id="update_food_id" name="food_id">
+                    <label for="update_title">Title:</label><br>
+                    <input type="text" id="update_title" name="title" required><br>
+                    <label for="update_price">Price:</label><br>
+                    <input type="number" id="update_price" name="price" min="0" step="1" required><br>
+                    <label for="update_image">Image:</label><br>
+                    <input type="file" id="update_image" name="image" onchange="displayUpdateImage(this)"><br>
+                    <img id="update_imagePreview" src="#" alt="Selected Image"><br>
+                    <select class="custom-select" id="update_categories_id" name="categories_id">
+                        <option selected>Category</option>
+                        @foreach ($category as $cat)
+                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                        @endforeach
+                    </select><br>
+                    <label for="update_description">Description:</label><br>
+                    <textarea id="update_description" name="description" rows="2" cols="20" required></textarea><br>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @include('admin.adminscript')
 
 <script>
     $(document).ready(function () {
-
 
         fetchFoodItems();
 
@@ -251,13 +239,11 @@
         $(document).on('click', '#close_modal_btn', function() {
             $('#success_message').removeClass('alert alert-success').text('');
         });
+
         $(document).on('click', '.add-food-submit', function (e) {
             e.preventDefault();
-
             $(this).text('Sending..');
-
             var formData = new FormData($('#food_form')[0]);
-
             $.ajax({
                 type: "POST",
                 url: "/uploadfood",
@@ -291,27 +277,117 @@
         });
 
         function appendFoodItemToTable(item) {
-            console.log("Food item:", item);
             var categoryName = '';
             if (item.cat && item.cat.name) {
                 categoryName = item.cat.name;
             }
-            console.log("Category name:", categoryName); // Debugging
-            $('tbody').prepend('<tr>\
-        <td>' + item.title + '</td>\
-        <td>' + item.price + '</td>\
-        <td>' + item.description + '</td>\
-        <td>' + categoryName + '</td>\
-        <td><img src="/foodimage/' + item.image + '" width="100" height="100"></td>\
-        <td><a href="/deletefood/' + item.id + '" style="color: white; padding: 10px;"><i class="fas fa-trash-alt"></i></a></td>\
-        <td><a href="/updateview/' + item.id + '" style="color: white; padding: 10px;"><i class="fas fa-edit"></i></a></td>\
-    </tr>');
+            $('tbody').prepend('<tr data-food-id="' + item.id + '">\
+                <td>' + item.title + '</td>\
+                <td>' + item.price + '</td>\
+                <td>' + item.description + '</td>\
+                <td>' + categoryName + '</td>\
+                <td><img src="/foodimage/' + item.image + '" width="100" height="100"></td>\
+                <td><a href="#" class="delete-food" data-food-id="' + item.id + '" style="color: white; padding: 10px;"><i class="fas fa-trash-alt"></i></a></td>\
+                <td><a href="/updateview/' + item.id + '" style="color: white; padding: 10px;"><i class="fas fa-edit"></i></a></td>\
+            </tr>');
         }
 
 
+        $(document).on('click', '.delete-food', function (e) {
+            e.preventDefault();
+            var foodId = $(this).data('food-id');
+            $('#confirmDeleteBtn').data('food-id', foodId);
+            $('#deleteModal').modal('show');
+        });
+
+        $(document).on('click', '#confirmDeleteBtn', function (e) {
+            e.preventDefault();
+            var foodId = $(this).data('food-id');
+            $.ajax({
+                type: 'DELETE',
+                url: '/deletefood/' + foodId,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (response) {
+                    console.log(response);
+                    $('#deleteModal').modal('hide');
+                    $('tr[data-food-id="' + foodId + '"]').remove(); // Remove the table row
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error deleting food item:", error);
+                    // Handle errors
+                }
+            });
+        });
 
 
-    })
+
+        $(document).on('click', 'a[href^="/updateview/"]', function (e) {
+            e.preventDefault();
+            var foodId = $(this).attr('href').split('/').pop();
+
+            $.ajax({
+                type: 'GET',
+                url: '/fetch-food-item/' + foodId,
+                success: function (response) {
+                    var item = response.food;
+                    $('#update_food_id').val(item.id);
+                    $('#update_title').val(item.title);
+                    $('#update_price').val(item.price);
+                    $('#update_description').val(item.description);
+                    $('#update_imagePreview').attr('src', '/foodimage/' + item.image).show();
+                    $('#update_categories_id').val(item.categories_id);
+                    $('#updateModal').modal('show');
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching food item:", error);
+                    alert('Error fetching food item: ' + error);
+                }
+            });
+        });
+
+        $(document).on('submit', '#update_food_form', function (e) {
+            e.preventDefault();
+            var formData = new FormData($(this)[0]);
+            var foodId = $('#update_food_id').val();
+
+            $.ajax({
+                type: 'POST',
+                url: '/updatefood/' + foodId,
+                data: formData,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response.status == 'success') {
+                        updateFoodItemInTable(response.item);
+                        $('#updateModal').modal('hide');
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error updating food item:", error);
+                    alert('Error updating food item: ' + error);
+                }
+            });
+        });
+
+        function updateFoodItemInTable(item) {
+            var categoryName = '';
+            if (item.cat && item.cat.name) {
+                categoryName = item.cat.name;
+            }
+            var row = $('tr[data-food-id="' + item.id + '"]');
+            row.find('td').eq(0).text(item.title);
+            row.find('td').eq(1).text(item.price);
+            row.find('td').eq(2).text(item.description);
+            row.find('td').eq(3).text(categoryName);
+            row.find('img').attr('src', '/foodimage/' + item.image);
+        }
+    });
     function displayImage(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
@@ -321,13 +397,21 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
-
-
+    function displayUpdateImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#update_imagePreview').attr('src', e.target.result).show();
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 </script>
-
 
 <script src="https://cdn.jsdelivr.net/npm/izitoast/dist/js/iziToast.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+
+
