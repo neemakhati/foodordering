@@ -5,16 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    
+
     @include('homecss')
-    
+
 </head>
 <body>
+
+
+
+@if(session('message'))
+    <div class="alert alert-success">
+        {{ session('message') }}
+    </div>
+@endif
+@if (session('verifyEmailMessage'))
+    <div class=" alert alert-info">
+        {{ session('verifyEmailMessage') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
     @extends('homeheader')
 
     @section('search')
         @include('search')
     @endsection
+
 
     <div id="banner">@include('banner')</div>
     <div id="about">@include('about')</div>
@@ -22,12 +43,14 @@
     <div id="trend">@include('trend')</div>
     <div id="footer">@include('homefooter')</div>
 
-    
+
 
     <script>
+
         document.addEventListener('DOMContentLoaded', function() {
+
             var searchInput = document.getElementById("searchInput");
-            
+
 
             searchInput.addEventListener("input", searchFood);
             searchInput.addEventListener("keydown", handleBackspace);
@@ -102,7 +125,7 @@
                         console.log('Toggling section:', section, 'to', hide ? 'none' : 'block');
                         element.style.display = hide ? "none" : "block";
                     } else {
-                        console.error('Element not found:', section); 
+                        console.error('Element not found:', section);
                     }
                 });
             }

@@ -5,6 +5,7 @@
             {{ session('error') ? session('error') : session('success') }}
         </div>
         @endif
+
         <div class="row">
             <div class="col-12">
                 <nav class="main-nav">

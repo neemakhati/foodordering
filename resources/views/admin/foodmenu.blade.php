@@ -93,8 +93,6 @@
         <button type="button" class="add-food-button-container" id="foodModalBtn" data-toggle="modal" data-target="#foodModal">
             <i class="fas fa-plus"></i>
         </button>
-
-
         <div class="modal fade" id="foodModal" tabindex="-1" role="dialog" aria-labelledby="foodModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">

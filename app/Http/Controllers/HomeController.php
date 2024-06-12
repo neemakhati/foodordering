@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Food;
 use App\Models\Cart;
@@ -11,9 +12,12 @@ use App\Models\Order;
 use App\Models\Category;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactFormMail;
+use App\Mail\VerificationMail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Exception;
+use Illuminate\Support\Str;
+
 class HomeController extends Controller
 {
     public function myorderlist(Request $request)
@@ -47,31 +51,35 @@ class HomeController extends Controller
         });
         return redirect()->back()->with('success', 'Order placed successfully!');
     }
+    public function sendEmail(Request $request)
+{
+    Log::info('Form data received:', $request->all());
 
+    $request->validate([
+        'name' => 'required|string',
+        'email' => 'required|email',
+        'subject' => 'required|string',
+        'message' => 'required|string',
+    ]);
 
-        public function sendEmail(Request $request)
-    {
-        Log::info('Form data received:', $request->all());
-
-        $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email',
-            'subject' => 'required|string',
-            'message' => 'required|string',
-        ]);
-
-        try {
-            Mail::to('neemakhati11@gmail.com')->send(new ContactFormMail($request->all()));
-        } catch (Exception $e) {
-            Log::error('Error sending email:', ['exception' => $e]);
-            return redirect()->back()->with('error', 'There was an error sending your message. Please try again later.');
-        }
-        return redirect()->back()->with('success', 'Sent!');
+    try {
+        Mail::to('neemakhati11@gmail.com')->send(new ContactFormMail($request->all()));
+    } catch (Exception $e) {
+        Log::error('Error sending email:', ['exception' => $e]);
+        return redirect()->back()->with('error', 'There was an error sending your message. Please try again later.');
     }
-        public function index(){
+    return redirect()->back()->with('success', 'Sent!');
+}
+    public function index(){
         $data = food::all();
         $categories = Category::all();
         return view('home',compact('data','categories'));
+
+    }
+    public function invalidhome(){
+        $data = food::all();
+        $categories = Category::all();
+        return view('invalidhome',compact('data','categories'));
 
     }
     public function about(){
@@ -135,7 +143,6 @@ class HomeController extends Controller
             return redirect()->back()->with('error','Something went wrong');
         }
     }
-
     public function checkout(Request $request){
         try{
             $user = auth()->user();
@@ -170,9 +177,6 @@ class HomeController extends Controller
         return redirect()->back()->with('error','Something went wrong');
     }
     }
-
-
-
     public function search(Request $request)
     {
         $query = $request->input('query');
@@ -196,32 +200,76 @@ class HomeController extends Controller
             return response()->json(['html' => '']);
         }
     }
-
-
-
-
-
     public function showSignupForm()
     {
         return view('signup');
     }
     public function signup(Request $request){
-        $incomingData = $request->validate([
+        $request->validate([
             'name' => ['required','min:3','max:255',Rule::unique('users', 'name')],
-            'email' => ['required','email',Rule::unique('users', 'name')],
+            'email' => ['required','email'],
             'password' => 'required|min:6|max:255'
         ]);
 
-        $user = User::create($incomingData);
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
 
-        auth()->login($user);
+        ]);
+        $user->verification_token = Str::random(60);
+        $user->verification_token_expiry = Carbon::now()->addHours(4);
+        $user->save();
 
-        return redirect('/redirectsuser');
+        Mail::to($user->email)->send(new VerificationMail($user));
+        return redirect('/')->with('message', 'Please check your email for verification link.');
+
+    }
+    public function verify($token)
+    {
+        $user = User::where('verification_token', $token)->first();
+
+        if ($user) {
+            if (Carbon::now()->gt($user->verification_token_expiry)) {
+                return redirect('/signin')->with('error', 'This verification link has expired. Please request a new one.');
+            }
+            $user->isVerified = true;
+            $user->verification_token = null;
+            $user->save();
+
+            auth()->login($user);
+
+            return redirect('/redirectsuser')->with('message', 'Your email has been verified.');
+        }
+
+        return redirect('/signin')->with('error', 'Invalid verification link.');
     }
     public function showSigninForm()
     {
         return view('signin');
     }
+    public function signin(Request $request)
+    {
+        $incomingData = $request->validate([
+            'loginemail' => 'required|email|max:255',
+            'loginpassword' => 'required|min:6|max:255'
+        ]);
+
+        if (auth()->attempt(['email' => $incomingData['loginemail'], 'password' => $incomingData['loginpassword']])) {
+            $user = auth()->user();
+            if ($user->usertype == "1") {
+                auth()->logout();
+                return redirect()->back()->with('error', 'Admins cannot log in from the user login page.');
+            }
+            if (!$user->isVerified) {
+                return redirect('/homein');
+            }
+            $request->session()->regenerate();
+            return redirect('/redirectsuser');
+        }
+        return redirect()->back()->with('error', 'Invalid credentials');
+    }
+
 
     public function adminshowSigninForm()
     {
@@ -253,28 +301,6 @@ class HomeController extends Controller
         // Authentication failed, return the admin signin form with an error message
         return view('signin')->with('error', 'Invalid credentials');
     }
-    public function signin(Request $request)
-    {
-        $incomingData = $request->validate([
-            'loginemail' => 'required|email|max:255',
-            'loginpassword' => 'required|min:6|max:255'
-        ]);
-
-        if (auth()->attempt(['email' => $incomingData['loginemail'], 'password' => $incomingData['loginpassword']])) {
-            // Check if the authenticated user is an admin
-            if (auth()->user()->usertype == "1") {
-                auth()->logout();
-                return redirect()->back()->with('error', 'Admins cannot log in from the user login page.');
-            }
-            $request->session()->regenerate();
-            return redirect('/redirectsuser');
-        }
-
-        return view('signin')->with('error', 'Invalid credentials');
-    }
-
-
-
 
     public function redirects(){
 //        $usertype= Auth::user()->usertype;

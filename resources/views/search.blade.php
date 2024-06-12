@@ -1,5 +1,5 @@
 <form id="searchForm">
-    <input type="text" id="searchInput" name="query" placeholder="Search food..." style="color:black;">
+    <input type="text" id="searchInput" name="query" placeholder="Search food..." style="color:black; border-radius: 40px;">
 </form>
 <section class="section">
 
@@ -10,8 +10,6 @@
             </div>
 
 </section>
-
-
 
 <script>
 function searchFood(event) {
@@ -61,7 +59,6 @@ function highlightMatchedLetters(query) {
             }
         }
         highlightedTitle += titleText.substring(lastIndex);
-
         item.querySelector("p").innerHTML = highlightedTitle;
     });
 }

@@ -4,39 +4,39 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
-Route::get('/',[HomeController::class, 'index']);
-Route::get('/about',[HomeController::class, 'about']);
-Route::get('/redirects', [HomeController::class, 'redirects']);
-Route::get('/logout', [HomeController::class, 'logout']);
-Route::get('/redirectsuser', [HomeController::class, 'redirectsuser']);
-Route::post('/addcart/{id}', [HomeController::class, 'addcart']);
-Route::get('/showcart/{id}', [HomeController::class, 'showcart']);
-Route::get('/deletecart/{id}', [HomeController::class, 'deletecart']);
-Route::get('/search', [HomeController::class, 'search'])->name('food.search');
-Route::get('/reservation', [HomeController::class, 'reservation']);
-Route::post('/checkout', [HomeController::class, 'checkout']);
+use App\Http\Middleware\EnsureEmailIsVerified;
 
-Route::get('/category/{slug}',[CategoryController::class, 'bakery'])->name('category.view');
-Route::get('/appetizer',[CategoryController::class, 'appetizer']);
-Route::get('/dessert',[CategoryController::class, 'dessert']);
-
-
-Route::post('/contact', [HomeController::class, 'sendEmail'])->name('contact.send');
-Route::post('/ordermail', [HomeController::class, 'ordermail']);
-Route::get('/myorderlist', [HomeController::class, 'myorderlist']);
-
-
-Route::post('/signup',[HomeController::class,'signup'])->name('signup');
+Route::get('/',[HomeController::class, 'index'])->name('home');
+Route::get('/homein',[HomeController::class, 'invalidhome'])->name('invalidhome');
 Route::post('/signin',[HomeController::class,'signin'])->name('signin');
+Route::post('/signup',[HomeController::class,'signup'])->name('signup');
 Route::get('/signup', [HomeController::class, 'showSignupForm'])->name('signup.form');
 Route::get('/signin', [HomeController::class, 'showSigninForm'])->name('signin.form');
+Route::get('/verify/{token}', [HomeController::class, 'verify']);
+Route::get('/redirects', [HomeController::class, 'redirects']);
+Route::get('/redirectsuser', [HomeController::class, 'redirectsuser']);
+
+
+Route::middleware([EnsureEmailIsVerified::class])->group(function () {
+    Route::get('/about',[HomeController::class, 'about']);
+    Route::post('/addcart/{id}', [HomeController::class, 'addcart']);
+    Route::get('/showcart/{id}', [HomeController::class, 'showcart']);
+    Route::get('/deletecart/{id}', [HomeController::class, 'deletecart']);
+    Route::get('/search', [HomeController::class, 'search'])->name('food.search');
+    Route::get('/reservation', [HomeController::class, 'reservation']);
+    Route::post('/checkout', [HomeController::class, 'checkout']);
+    Route::post('/contact', [HomeController::class, 'sendEmail'])->name('contact.send');
+    Route::post('/ordermail', [HomeController::class, 'ordermail']);
+    Route::get('/myorderlist', [HomeController::class, 'myorderlist']);
+    Route::get('/category/{slug}',[CategoryController::class, 'bakery'])->name('category.view');
+});
+
+
+
 
 Route::post('/adminlog',[HomeController::class,'adminlog'])->name('adminsignin');
 Route::get('/adminlog', [HomeController::class, 'adminshowSigninForm'])->name('adminsignin.form');
-
-
-
-
+Route::get('/logout', [HomeController::class, 'logout']);
 
 Route::get('/deletefood/{id}', [AdminController::class, 'deletefood']);
 Route::get('/updateview/{id}', [AdminController::class, 'updateview']);
@@ -50,22 +50,14 @@ Route::post('/updatecat/{id}', [AdminController::class, 'updatecat']);
 Route::get('/orders', [AdminController::class,'orders']);
 Route::get('/users', [AdminController::class,'users'])->name('users');
 Route::get('/deleteuser/{id}', [AdminController::class, 'deleteUser'])->name('deleteuser');
-
 Route::get('/addfood', [AdminController::class, 'showAddFoodForm']);
-
 Route::post('/uploadfood', [AdminController::class, 'upload']);
-
-Route::get('/foodMenu', [AdminController::class, 'foodMenu']);
-Route::post('/foodMenu', [AdminController::class, 'foodMenu']);
-
-
-
-// Route to fetch food items
+Route::match(['get', 'post'], '/foodMenu', [AdminController::class, 'foodMenu']);
 Route::get('/fetch-food-items', [AdminController::class, 'fetchFoodItems']);
-
-// Route to upload food
 Route::post('/uploadfood', [AdminController::class, 'uploadFood']);
 Route::delete('/deletefood/{id}', [AdminController::class, 'destroy'])->name('deletefood');
-
 Route::get('/fetch-food-item/{id}', [AdminController::class, 'fetchFoodItem']);
 Route::post('/updatefood/{id}', [AdminController::class, 'updateFood']);
+
+Route::get('/appetizer',[CategoryController::class, 'appetizer']);
+Route::get('/dessert',[CategoryController::class, 'dessert']);

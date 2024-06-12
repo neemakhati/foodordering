@@ -66,6 +66,8 @@
 <body>
 <div class="container">
     <h2>Sign Up</h2>
+
+
     <form action="/signup" method="post">
         @csrf
         <label for="name">Name</label>
