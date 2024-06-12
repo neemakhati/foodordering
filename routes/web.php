@@ -5,6 +5,9 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Middleware\EnsureEmailIsVerified;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+
 
 Route::get('/',[HomeController::class, 'index'])->name('home');
 Route::get('/homein',[HomeController::class, 'invalidhome'])->name('invalidhome');
@@ -61,3 +64,9 @@ Route::post('/updatefood/{id}', [AdminController::class, 'updateFood']);
 
 Route::get('/appetizer',[CategoryController::class, 'appetizer']);
 Route::get('/dessert',[CategoryController::class, 'dessert']);
+
+Route::get('/forgot-password',[ForgotPasswordController::class,'showLinkRequestForm'])->name('password.request');
+Route::post('/forgot-password',[ForgotPasswordController::class,'sendResetLinkEmail'])->name('password.email');
+Route::get('/reset-password/{token}',[ResetPasswordController::class,'showResetForm'])->name('password.reset');
+Route::post('/reset-password',[ResetPasswordController::class,'reset'])->name('password.update');
+
