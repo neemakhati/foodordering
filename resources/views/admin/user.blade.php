@@ -71,6 +71,7 @@
 <body>
 <div class="container-scroller">
     @include('admin.navbar')
+    @include('notifyorder')
     <div class="user-table-container">
         <table>
             <thead>

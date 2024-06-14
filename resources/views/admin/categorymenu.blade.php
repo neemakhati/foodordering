@@ -41,6 +41,7 @@
 <body>
 <div class="container-scroller">
     @include('admin.navbar')
+    @include('notifyorder')
     <div style="position:relative; top:60px; right:-150px;">
         <form action="{{url('/uploadcategory')}}" method="post" enctype="multipart/form-data">
             @csrf

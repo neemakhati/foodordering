@@ -109,71 +109,59 @@
     </style>
 </head>
 <body>
-<div class="container-scroller">
-    @include('admin.navbar')
-    @include('notifyorder')
-    <div style="margin: 100px; width: 2550px;">
-        <table>
-            <thead>
-            <tr>
-                <th>Order ID</th>
-                <th>Username</th>
-                <th>Phone</th>
-                <th>Address</th>
-                <th>Food Details</th>
-                <th>Total Price</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach ($data as $index => $order)
-                <tr>
-                    <td>{{ $index + 1 + ($data->currentPage() - 1) * $data->perPage() }}</td>
-                    <td>{{ $order->username }}</td>
-                    <td>{{ $order->phone }}</td>
-                    <td>{{ $order->address }}</td>
-                    <td>
-                        <ul style="list-style: none; padding: 10px;">
-                            @foreach (json_decode($order->food_details) as $foodDetail)
-                                <li style="margin-bottom: 6px;">Name: {{ $foodDetail->name }}<br>Price: {{ $foodDetail->price }}<br>Quantity: {{ $foodDetail->quantity }}</li>
-                            @endforeach
-                        </ul>
-                    </td>
-                    <td>{{ $order->total_price }}</td>
-                </tr>
-            @endforeach
-            </tbody>
-        </table>
-        <div class="pagination-wrapper">
-            @if ($data->hasPages())
-                <nav>
-                    <ul class="pagination">
 
-                        @if ($data->onFirstPage())
-                            <li class="disabled" aria-disabled="true">
-                                <span>Previous</span>
-                            </li>
-                        @else
-                            <li>
-                                <a href="{{ $data->previousPageUrl() }}" rel="prev">Previous</a>
-                            </li>
-                        @endif
-
-                        @if ($data->hasMorePages())
-                            <li>
-                                <a href="{{ $data->nextPageUrl() }}" rel="next">Next</a>
-                            </li>
-                        @else
-                            <li class="disabled" aria-disabled="true">
-                                <span>Next</span>
-                            </li>
-                        @endif
-                    </ul>
-                </nav>
-            @endif
-        </div>
+    <div class="bell-icon">
+        <i class="fa fa-bell"></i>
+        <span class="badge" id="order-count">0</span>
     </div>
-</div>
+    <div class="dropdown-menu" id="order-details">
+        <ul id="order-list">
+            <!-- Order details will be appended here -->
+        </ul>
+    </div><script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const bellIcon = document.querySelector('.bell-icon');
+            const orderCount = document.getElementById('order-count');
+            const orderDetails = document.getElementById('order-details');
+            const orderList = document.getElementById('order-list');
 
+            bellIcon.addEventListener('click', function() {
+                orderDetails.classList.toggle('active');
+            });
+
+
+            function fetchOrderCount() {
+                fetch('/orders/count')
+                    .then(response => response.json())
+                    .then(data => {
+                        orderCount.textContent = data.count;
+                        fetchOrderDetails();
+                    })
+                    .catch(error => console.error('Error fetching order count:', error));
+            }
+
+            function fetchOrderDetails() {
+                fetch('/orders/details')
+                    .then(response => response.json())
+                    .then(data => {
+                        orderList.innerHTML = '';
+                        data.orders.forEach(order => {
+                            const li = document.createElement('li');
+                            li.innerHTML = `<strong>Name:</strong> ${order.username}<br>
+                                        <strong>Price:</strong> ${order.total_price}<br>
+                                        <strong>Time:</strong> ${order.created_at}`;
+                            orderList.appendChild(li);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching order details:', error));
+            }
+
+            setInterval(fetchOrderCount, 30000); // Fetch order count every 30 seconds
+
+            // Initial fetch
+            fetchOrderCount();
+        });
+    </script>
 @include('admin.adminscript')
 </body>
 </html>

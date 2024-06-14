@@ -27,8 +27,6 @@ class HomeController extends Controller
         dd($order);
         return view('myorderlist', compact('order'));
     }
-
-
     public function ordermail(Request $request)
     {
         $orderDetails = $request->all();
@@ -269,8 +267,6 @@ class HomeController extends Controller
         }
         return redirect()->back()->with('error', 'Invalid credentials');
     }
-
-
     public function adminshowSigninForm()
     {
         return view('adminsignin');
@@ -301,7 +297,6 @@ class HomeController extends Controller
         // Authentication failed, return the admin signin form with an error message
         return view('signin')->with('error', 'Invalid credentials');
     }
-
     public function redirects(){
 //        $usertype= Auth::user()->usertype;
             return view("admin.adminhome");

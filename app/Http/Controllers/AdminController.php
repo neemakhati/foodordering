@@ -259,6 +259,25 @@ class AdminController extends Controller
 
         return view('admin.order',compact('data'));
     }
+    public function getOrderCount()
+    {
+        $count = Order::where('is_read', false)->count();
+        return response()->json(['count' => $count]);
+    }
+
+
+    public function getOrderDetails()
+    {
+        $orders = Order::where('is_read', false)
+            ->orderBy('created_at', 'desc')
+            ->take(10)
+            ->get(['username', 'total_price', 'created_at']);
+
+        // Mark fetched orders as read
+        Order::where('is_read', false)->update(['is_read' => true]);
+
+        return response()->json(['orders' => $orders]);
+    }
     public function users()
     {
         $data =User::orderBy('created_at', 'desc')->simplePaginate(10);

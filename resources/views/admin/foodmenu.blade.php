@@ -89,6 +89,7 @@
 <body>
 <div class="container-scroller">
     @include('admin.navbar')
+    @include('notifyorder')
     <div class="table-container">
         <button type="button" class="add-food-button-container" id="foodModalBtn" data-toggle="modal" data-target="#foodModal">
             <i class="fas fa-plus"></i>

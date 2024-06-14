@@ -115,24 +115,83 @@
         .forgot-password a:hover {
             text-decoration: underline;
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .modal-alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
     </style>
 </head>
 <body>
 @if(session('message'))
-    <div class="alert alert-success">
-        {{ session('message') }}
+    <div id="modal" class="modal">
+        <div class="modal-content modal-alert-success">
+            <span class="close">&times;</span>
+            <p>{{ session('message') }}</p>
+        </div>
     </div>
 @endif
 
 @if(session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
+    <div id="modal" class="modal">
+        <div class="modal-content modal-alert-danger">
+            <span class="close">&times;</span>
+            <p>{{ session('error') }}</p>
+        </div>
     </div>
 @endif
 
 @if (session('status'))
-    <div class="alert alert-success">
-        {{ session('status') }}
+    <div id="modal" class="modal">
+        <div class="modal-content modal-alert-success">
+            <span class="close">&times;</span>
+            <p>{{ session('status') }}</p>
+        </div>
     </div>
 @endif
 
@@ -157,5 +216,25 @@
     </div>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var modal = document.getElementById('modal');
+        var span = document.getElementsByClassName('close')[0];
+
+        if (modal) {
+            modal.style.display = 'block';
+        }
+
+        span.onclick = function() {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    });
+</script>
 </body>
 </html>

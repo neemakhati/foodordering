@@ -103,6 +103,12 @@
             background-color: #f8d7da;
             border-color: #f5c6cb;
         }
+
+        .error-message {
+            color: #d9534f;
+            font-size: 14px;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -126,16 +132,19 @@
 
 <div class="container">
     <h2>Sign Up</h2>
-    <form action="/signup" method="post">
+    <form id="signupForm" action="/signup" method="post">
         @csrf
         <label for="name">Name</label>
         <input type="text" id="name" name="name" required>
+        <div id="nameError" class="error-message">Name is required and must be at least 3 characters.</div>
 
         <label for="email">Email</label>
         <input type="email" id="email" name="email" required>
+        <div id="emailError" class="error-message">Please enter a valid email address.</div>
 
         <label for="password">Password</label>
         <input type="password" id="password" name="password" required>
+        <div id="passwordError" class="error-message">Password must be at least 6 characters long.</div>
 
         <button type="submit">Sign Up</button>
     </form>
@@ -143,5 +152,44 @@
         <p>Already have an account? <a href="/signin">Login</a></p>
     </div>
 </div>
+
+<script>
+    document.getElementById('signupForm').addEventListener('submit', function(event) {
+        let valid = true;
+
+        // Name validation
+        const name = document.getElementById('name').value;
+        if (name.length < 3) {
+            document.getElementById('nameError').style.display = 'block';
+            valid = false;
+        } else {
+            document.getElementById('nameError').style.display = 'none';
+        }
+
+        // Email validation
+        const email = document.getElementById('email').value;
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        if (!emailPattern.test(email)) {
+            document.getElementById('emailError').style.display = 'block';
+            valid = false;
+        } else {
+            document.getElementById('emailError').style.display = 'none';
+        }
+
+        // Password validation
+        const password = document.getElementById('password').value;
+        if (password.length < 6) {
+            document.getElementById('passwordError').style.display = 'block';
+            valid = false;
+        } else {
+            document.getElementById('passwordError').style.display = 'none';
+        }
+
+        // If any validation fails, prevent form submission
+        if (!valid) {
+            event.preventDefault();
+        }
+    });
+</script>
 </body>
 </html>

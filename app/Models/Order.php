@@ -18,5 +18,6 @@ class Order extends Model
         'status',
         'total_price',
         'food_details',
+        'is_read'
     ];
 }

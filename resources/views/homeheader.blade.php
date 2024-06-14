@@ -1,10 +1,6 @@
 <header class="header-area header-sticky">
     <div>
-        @if(session('error') || session('success'))
-        <div style="height:20px; width:200px; background-color:white; border:none;" class="alert alert-{{ session('error') ? 'danger' : 'success' }}">
-            {{ session('error') ? session('error') : session('success') }}
-        </div>
-        @endif
+
 
         <div class="row">
             <div class="col-12">
@@ -66,3 +62,12 @@
         </div>
     </div>
 </header>
+<script>
+    $(document).ready(function() {
+        @if(session('error'))
+        alert("{{ session('error') }}");
+        @elseif(session('success'))
+        alert("{{ session('success') }}");
+        @endif
+    });
+</script>

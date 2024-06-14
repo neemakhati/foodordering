@@ -50,7 +50,13 @@ Route::post('/uploadcategory', [AdminController::class, 'uploadcategory']);
 Route::get('/deletecategory/{id}', [AdminController::class, 'deletecategory']);
 Route::get('/updatecategory/{id}', [AdminController::class, 'updatecategory']);
 Route::post('/updatecat/{id}', [AdminController::class, 'updatecat']);
+
 Route::get('/orders', [AdminController::class,'orders']);
+Route::get('/orders/count', [AdminController::class, 'getOrderCount']);
+Route::get('/orders/details', [AdminController::class, 'getOrderDetails']);
+
+
+
 Route::get('/users', [AdminController::class,'users'])->name('users');
 Route::get('/deleteuser/{id}', [AdminController::class, 'deleteUser'])->name('deleteuser');
 Route::get('/addfood', [AdminController::class, 'showAddFoodForm']);
