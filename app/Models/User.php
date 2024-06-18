@@ -60,6 +60,10 @@ class User extends Authenticatable
     public function carts() {
         return $this->hasMany(Cart::class)->where('status',0);
     }
+    public function isAdmin()
+    {
+        return $this->usertype == 1; // Assuming user_type 1 is admin
+    }
     protected function casts(): array
     {
         return [

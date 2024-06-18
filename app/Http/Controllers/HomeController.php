@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Exception;
 use Illuminate\Support\Str;
+use App\Events\OrderPlaced;
 
 class HomeController extends Controller
 {
@@ -141,10 +142,10 @@ class HomeController extends Controller
             return redirect()->back()->with('error','Something went wrong');
         }
     }
-    public function checkout(Request $request){
-        try{
+    public function checkout(Request $request)
+    {
+        try {
             $user = auth()->user();
-
             $cartItems = $user->carts;
 
             $order = new Order();
@@ -152,7 +153,6 @@ class HomeController extends Controller
             $order->phone = $request->input('phone');
             $order->address = $request->input('address');
             $order->status = 'ordered';
-
 
             $totalPrice = 0;
             $foodDetails = [];
@@ -167,13 +167,23 @@ class HomeController extends Controller
 
             $order->total_price = $totalPrice;
             $order->food_details = json_encode($foodDetails);
-
             $order->save();
+
             $user->carts()->delete();
-            return redirect()->back()->with('success','Order placed successfully');
-    }catch(Exception $e){
-        return redirect()->back()->with('error','Something went wrong');
+
+            \Log::info('Order created', ['order' => $order]);
+            event(new OrderPlaced($order));
+
+            return redirect()->back()->with('success', 'Order placed successfully');
+        } catch (\Exception $e) {
+            \Log::error('Error placing order: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Something went wrong');
+        }
     }
+    public function testfunc(){
+        $order= Order::where('username','Sita Shrestha')->first();
+        event(new OrderPlaced($order));
+        return view('testfunc');
     }
     public function search(Request $request)
     {

@@ -20,4 +20,6 @@ class Order extends Model
         'food_details',
         'is_read'
     ];
+
+
 }

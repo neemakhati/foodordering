@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 
 
+
 Route::get('/',[HomeController::class, 'index'])->name('home');
 Route::get('/homein',[HomeController::class, 'invalidhome'])->name('invalidhome');
 Route::post('/signin',[HomeController::class,'signin'])->name('signin');
@@ -27,16 +28,16 @@ Route::middleware([EnsureEmailIsVerified::class])->group(function () {
     Route::get('/deletecart/{id}', [HomeController::class, 'deletecart']);
     Route::get('/search', [HomeController::class, 'search'])->name('food.search');
     Route::get('/reservation', [HomeController::class, 'reservation']);
-    Route::post('/checkout', [HomeController::class, 'checkout']);
+
     Route::post('/contact', [HomeController::class, 'sendEmail'])->name('contact.send');
     Route::post('/ordermail', [HomeController::class, 'ordermail']);
     Route::get('/myorderlist', [HomeController::class, 'myorderlist']);
     Route::get('/category/{slug}',[CategoryController::class, 'bakery'])->name('category.view');
 });
 
+Route::get('/test',[HomeController::class,'testfunc']);
 
-
-
+Route::post('/checkout', [HomeController::class, 'checkout']);
 Route::post('/adminlog',[HomeController::class,'adminlog'])->name('adminsignin');
 Route::get('/adminlog', [HomeController::class, 'adminshowSigninForm'])->name('adminsignin.form');
 Route::get('/logout', [HomeController::class, 'logout']);
@@ -55,6 +56,9 @@ Route::get('/orders', [AdminController::class,'orders']);
 Route::get('/orders/count', [AdminController::class, 'getOrderCount']);
 Route::get('/orders/details', [AdminController::class, 'getOrderDetails']);
 
+Route::get('/pusher',function (){
+    return view('pusher');
+});
 
 
 Route::get('/users', [AdminController::class,'users'])->name('users');

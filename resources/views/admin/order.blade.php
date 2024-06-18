@@ -107,11 +107,17 @@
             border-bottom: none;
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.11.0/dist/echo.iife.min.js"></script>
 </head>
 <body>
 <div class="container-scroller">
     @include('admin.navbar')
-    @include('notifyorder')
+    <div id="orderNotifications">
+        <!-- Notification area where new order notifications will appear -->
+    </div>
+
     <div style="margin: 100px; width: 2550px;">
         <table>
             <thead>
@@ -175,5 +181,36 @@
 </div>
 
 @include('admin.adminscript')
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+<script>
+
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher('e7ec3d9de66764ab96b1', {
+        cluster: 'ap2'
+    });
+
+    var channel = pusher.subscribe('my-channel.');
+    Echo.private('my-channel.' + this.order)
+        .listen('OrderPlaced', (e) => {
+            console.log("hi we r in");
+        });
+    channel.bind('my-event', function(data) {
+        // alert(JSON.stringify(data));
+        console.log(data);
+        var notificationHtml = '<div class="notification">' +
+            '<p>New order placed: Order ID ' + data.order.id + '</p>' +
+            '<p>Username: ' + data.order.username + '</p>' +
+            '</div>';
+
+        $('#orderNotifications').prepend(notificationHtml);
+    });
+
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.11.0/dist/echo.iife.min.js"></script>
+
+
 </body>
 </html>
