@@ -39,6 +39,7 @@ class AdminController extends Controller
     {
         try{
             $food =Food::orderBy('created_at', 'desc')->paginate(8);
+
             $category = Category::all();
 
             return view('admin.foodmenu',compact('food', 'category'));
@@ -72,6 +73,44 @@ class AdminController extends Controller
     }
 
 
+    public function uploadFoods(Request $request)
+    {
+        // Validate the request data for multiple food items
+        $validatedData = $request->validate([
+            'title.*' => 'required|string',
+            'price.*' => 'required|numeric',
+            'image.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'categories_id.*' => 'required|exists:categories,id',
+            'description.*' => 'required|string',
+        ]);
+
+        // Loop through the validated data and save each food item
+        $titles = $validatedData['title'];
+        $prices = $validatedData['price'];
+        $images = $request->file('image');
+        $categories_ids = $validatedData['categories_id'];
+        $descriptions = $validatedData['description'];
+
+        for ($i = 0; $i < count($titles); $i++) {
+            $food = new Food();
+            $food->title = $titles[$i];
+            $food->price = $prices[$i];
+            $food->description = $descriptions[$i];
+            $food->categories_id = $categories_ids[$i];
+
+            if (isset($images[$i])) {
+                $image = $images[$i];
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $image->move(public_path('foodimage'), $imageName);
+                $food->image = $imageName;
+            }
+
+            $food->save();
+            $food->load('cat');
+        }
+        $food->load('cat');
+        return response()->json(['status' => 'success', 'message' => 'Food items uploaded successfully']);
+    }
     public function uploadFood(Request $request)
     {
 

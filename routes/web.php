@@ -68,6 +68,10 @@ Route::post('/uploadfood', [AdminController::class, 'upload']);
 Route::match(['get', 'post'], '/foodMenu', [AdminController::class, 'foodMenu']);
 Route::get('/fetch-food-items', [AdminController::class, 'fetchFoodItems']);
 Route::post('/uploadfood', [AdminController::class, 'uploadFood']);
+
+Route::post('/uploadfoods', [AdminController::class, 'uploadFoods']);
+
+
 Route::delete('/deletefood/{id}', [AdminController::class, 'destroy'])->name('deletefood');
 Route::get('/fetch-food-item/{id}', [AdminController::class, 'fetchFoodItem']);
 Route::post('/updatefood/{id}', [AdminController::class, 'updateFood']);

@@ -5,6 +5,26 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     @include('admin.admincss')
     <style>
+        .modal-dialog.modal-lg {
+            max-width: 90%;
+        }
+
+        .foods-item-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .foods-item-form .form-group {
+            flex: 1;
+            min-width: 200px; /* Adjust based on the minimum width you want for each input group */
+        }
+
+        .imagePreview {
+            display: block;
+            margin-top: 10px;
+            max-width: 100px;
+        }
 
 
         table {
@@ -131,6 +151,63 @@
                 </div>
             </div>
         </div>
+        <button style="background-color: white; color:black; margin-left: 1000px;" type="button" class="btn btn-primary mb-2" id="itemModalBtn" data-toggle="modal" data-target="#foodsModal">
+            <i class="fas fa-plus"></i>
+        </button>
+
+        <div class="modal fade" id="foodsModal" tabindex="-1" role="dialog" aria-labelledby="foodModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="foodModalLabel">Add New Food Items</h5>
+                        <button type="button" id="add_more_food_item" style="margin-left: -1125px;">+</button>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="foods_form" enctype="multipart/form-data">
+                            @csrf
+                            <div id="food_items_container">
+                                <div class="foods-item-form">
+                                    <div class="form-group">
+                                        <label for="title">Title:</label>
+                                        <input type="text" name="title[]" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="price">Price:</label>
+                                        <input type="number" name="price[]" min="0" step="any" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="image">Image:</label>
+                                        <input type="file" name="image[]" onchange="pics(this)" required>
+                                        <img class="imagePreview" src="#" alt="Selected Image" style="display:none;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="categories_id">Category:</label>
+                                        <select name="categories_id[]" required>
+                                            <option value="">Select Category</option>
+                                            @foreach ($category as $category)
+                                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="description">Description:</label>
+                                        <textarea name="description[]" rows="2" cols="20" required></textarea>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <button type="submit">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
 
         <table>
             <thead>
@@ -196,7 +273,41 @@
                 }
             });
         }
+        $('#foods_form').submit(function(e) {
+            e.preventDefault();
+            var formData = new FormData($(this)[0]);
 
+            $.ajax({
+                type: 'POST',
+                url: '/uploadfoods',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.status === 'success') {
+                        fetchFoodItems();
+                        $('#foodsModal').modal('hide');
+                        $('#foods_form')[0].reset();
+                        $('.imagePreview').hide();
+                        $('#food_items_container').children('.foods-item-form').not(':first').hide();
+
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error adding food items:', error);
+                    alert('Error: ' + error);
+                }
+            });
+        });
+
+        $('#add_more_food_item').click(function() {
+            var foodItemForm = $('.foods-item-form:first').clone();
+            foodItemForm.find('input, select, textarea').val('');
+            foodItemForm.find('.imagePreview').hide();
+            $('#food_items_container').append(foodItemForm);
+        });
         $(document).on('click', '.add-food-button-container', function () {
             $('#food_form')[0].reset();
             $('#food_id').val('');
@@ -344,6 +455,17 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+    function pics(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            var previewImage = $(input).siblings('.imagePreview').first();
+
+            reader.onload = function(e) {
+                previewImage.attr('src', e.target.result).show();
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/izitoast/dist/js/iziToast.min.js"></script>
@@ -351,5 +473,4 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
-
 
