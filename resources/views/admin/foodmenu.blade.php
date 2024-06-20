@@ -161,7 +161,7 @@
                     <div class="modal-header">
                         <h5 class="modal-title" id="foodModalLabel">Add New Food Items</h5>
                         <button type="button" id="add_more_food_item" style="margin-left: -1125px;">+</button>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="foodsclose" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -253,6 +253,17 @@
 
 <script>
     $(document).ready(function () {
+        $('#foodModal').modal({
+            backdrop: 'static',
+            keyboard: false,
+            show: false
+        });
+        $('#foodsModal').modal({
+            backdrop: 'static',
+            keyboard: false,
+            show: false
+        });
+
 
         fetchFoodItems();
 
@@ -273,6 +284,10 @@
                 }
             });
         }
+
+        $('.foodsclose').on('click', function(){
+            $('#food_items_container').children('.foods-item-form').not(':first').hide();
+        });
         $('#foods_form').submit(function(e) {
             e.preventDefault();
             var formData = new FormData($(this)[0]);

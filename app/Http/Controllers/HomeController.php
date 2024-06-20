@@ -169,6 +169,11 @@ class HomeController extends Controller
             $order->food_details = json_encode($foodDetails);
             $order->save();
 
+            foreach ($cartItems as $cartItem) {
+                $order->foods()->attach($cartItem->food->id, ['user_id' => $user->id]);
+
+            }
+
             $user->carts()->delete();
 
             \Log::info('Order created', ['order' => $order]);

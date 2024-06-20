@@ -30,6 +30,10 @@ class User extends Authenticatable
         'password',
         'api_token',
     ];
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class, 'order_food_user','user_id', 'order_id')->withPivot('food_id');
+    }
 
     /**
      * The attributes that should be hidden for serialization.

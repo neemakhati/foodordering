@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use App\Models\Food;
+use App\Models\Order;
+use App\Models\Category;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +15,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        Category::factory(10)->create();
+        User::factory(10)->create();
 
-        $this->call([
-            // AdminSeeder::class,
-            CategorySeeder::class,  
-        ]);
+        Food::factory(30)->create();
+
+        $orders = Order::factory(50)->create();
+
+        foreach ($orders as $order) {
+            $user = User::where('name', $order->username)->first();
+
+            $foodDetails = json_decode($order->food_details, true);
+
+            foreach ($foodDetails as $foodDetail) {
+                $food = Food::where('title', $foodDetail['name'])->first();
+
+                $order->foods()->attach($food->id, [
+                    'user_id' => $user->id,
+                ]);
+            }
+        }
     }
 }

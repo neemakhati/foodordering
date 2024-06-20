@@ -51,8 +51,10 @@ Route::post('/uploadcategory', [AdminController::class, 'uploadcategory']);
 Route::get('/deletecategory/{id}', [AdminController::class, 'deletecategory']);
 Route::get('/updatecategory/{id}', [AdminController::class, 'updatecategory']);
 Route::post('/updatecat/{id}', [AdminController::class, 'updatecat']);
+Route::get('/analytics', [AdminController::class,'analytics']);
 
 Route::get('/orders', [AdminController::class,'orders']);
+
 Route::get('/orders/count', [AdminController::class, 'getOrderCount']);
 Route::get('/orders/details', [AdminController::class, 'getOrderDetails']);
 

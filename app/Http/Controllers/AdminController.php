@@ -9,10 +9,23 @@ use App\Models\Order;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
+    public function analytics()
+    {
+        $topFoods = Food::select('food.id', 'food.title', DB::raw('count(*) as orders_count'))
+            ->join('order_food_user', 'food.id', '=', 'order_food_user.food_id')
+            ->groupBy('food.id', 'food.title')
+            ->orderByDesc('orders_count')
+            ->limit(10)
+            ->get();
+
+        return view('admin.top_foods', compact('topFoods'));
+    }
+
     public function updateFood(Request $request, $id)
     {
         $food = Food::findOrFail($id);

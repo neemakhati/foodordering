@@ -38,6 +38,14 @@
             </a>
           </li>
             <li class="nav-item menu-items">
+                <a class="nav-link" href="{{url('/analytics')}}">
+              <span class="menu-icon">
+                <i class="mdi mdi-playlist-play"></i>
+              </span>
+                    <span class="menu-title">Analytics</span>
+                </a>
+            </li>
+            <li class="nav-item menu-items">
                 <a class="nav-link" href="{{url('/adminlogout')}}">
               <span class="menu-icon">
                 <i class="mdi mdi-playlist-play"></i>

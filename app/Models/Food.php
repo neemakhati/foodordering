@@ -24,4 +24,9 @@ class Food extends Model
         return $this->belongsTo(Category::class,'categories_id');
     }
 
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class, 'order_food_user','food_id', 'order_id')->withPivot('user_id');
+    }
+
 }

@@ -144,6 +144,7 @@
                             @endforeach
                         </ul>
                     </td>
+
                     <td>{{ $order->total_price }}</td>
                 </tr>
             @endforeach
