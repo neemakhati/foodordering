@@ -16,10 +16,13 @@
                             <a href="/about" class="{{ Request::is('about') ? 'active' : '' }}">About</a>
                         </li>
                         @foreach ($categories as $category)
-                        <li style="padding:10px;" class="scroll-to-section">
-                            <a href="{{ route('category.view', ['slug' => $category->slug]) }}" class="{{ Request::is('category/' . $category->slug) ? 'active' : '' }}">{{ $category->name }}</a>
-                        </li>
+                            @if ($category->status == 1)
+                                <li style="padding:10px;" class="scroll-to-section">
+                                    <a href="{{ route('category.view', ['slug' => $category->slug]) }}" class="{{ Request::is('category/' . $category->slug) ? 'active' : '' }}">{{ $category->name }}</a>
+                                </li>
+                            @endif
                         @endforeach
+
                         <li style="padding:10px;" class="scroll-to-section">
                             @auth
                             <a href="{{ url('/showcart', Auth::user()->id) }}" class="{{ Request::is('showcart/*') ? 'active' : '' }}">

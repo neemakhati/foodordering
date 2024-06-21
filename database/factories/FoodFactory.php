@@ -30,20 +30,18 @@ class FoodFactory extends Factory
     }
     private function getRandomImagePath()
     {
-        // Ensure that the public path is correct
         $path = public_path('foodimage');
         $files = scandir($path);
 
-        // Filter out the current (.) and parent (..) directories
         $images = array_filter($files, function($file) use ($path) {
             return is_file($path . DIRECTORY_SEPARATOR . $file);
         });
 
         if (count($images) > 0) {
             $randomImage = $this->faker->randomElement($images);
-            return $randomImage; // Return just the filename
+            return $randomImage;
         }
 
-        return 'default.jpg'; // You can set a default image if no images are found
+        return 'default.jpg';
     }
 }

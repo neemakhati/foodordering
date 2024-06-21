@@ -25,6 +25,29 @@ class AdminController extends Controller
 
         return view('admin.top_foods', compact('topFoods'));
     }
+    public function getTopFoods()
+    {
+        $topFoods = Food::select('food.id', 'food.title', DB::raw('count(order_food_user.food_id) as orders_count'))
+            ->join('order_food_user', 'food.id', '=', 'order_food_user.food_id')
+            ->groupBy('food.id', 'food.title')
+            ->orderByDesc('orders_count')
+            ->limit(10)
+            ->get();
+
+        return response()->json(['topFoods' => $topFoods]);
+    }
+    public function getTopUsers()
+    {
+        $topUsers = DB::table('order_food_user')
+            ->join('users', 'order_food_user.user_id', '=', 'users.id')
+            ->select('users.name', DB::raw('count(order_food_user.user_id) as order_count'))
+            ->groupBy('users.id', 'users.name')
+            ->orderByDesc('order_count')
+            ->take(10)
+            ->get();
+
+        return response()->json(['topUsers' => $topUsers]);
+    }
 
     public function updateFood(Request $request, $id)
     {
