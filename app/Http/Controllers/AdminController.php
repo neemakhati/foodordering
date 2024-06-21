@@ -146,10 +146,20 @@ class AdminController extends Controller
     }
 
 
-    public function fetchFoodItems()
+
+    public function fetchFoodItems(Request $request)
     {
-        $food = Food::with(['cat:id,name'])->get();
-        return response()->json(['food' => $food]);
+        $perPage = $request->input('per_page', 10);
+        $page = $request->input('page', 1);
+
+        $foodItems = Food::with(['cat:id,name'])->paginate($perPage, ['*'], 'page', $page);
+
+        return response()->json([
+            'food' => $foodItems->items(),
+            'current_page' => $foodItems->currentPage(),
+            'last_page' => $foodItems->lastPage(),
+            'total' => $foodItems->total()
+        ]);
     }
 
 
@@ -221,7 +231,7 @@ class AdminController extends Controller
     {
         try{
             $food =food::all();
-            $category = Category::all();
+            $category = Category::orderBy('created_at', 'desc')->simplePaginate(4);
 
             return view('admin.categorymenu',compact('food', 'category'));
         }catch(Exception $e){
@@ -374,7 +384,7 @@ class AdminController extends Controller
     }
     public function orders()
     {
-        $data = Order::orderBy('created_at', 'desc')->simplePaginate(10);
+        $data = Order::orderBy('created_at', 'desc')->simplePaginate(7);
 
         return view('admin.order',compact('data'));
     }
@@ -399,7 +409,7 @@ class AdminController extends Controller
     }
     public function users()
     {
-        $data =User::orderBy('created_at', 'desc')->simplePaginate(10);
+        $data =User::orderBy('created_at', 'desc')->simplePaginate(7);
         return view('admin.user',compact('data'));
     }
     public function adminlogout(Request $request){

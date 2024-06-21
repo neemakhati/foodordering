@@ -5,6 +5,31 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     @include('admin.admincss')
     <style>
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px; /* Adjust as needed */
+        }
+
+        .pagination-container button {
+            background-color: #9c7b7b;
+            color: black;
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid #9c7b7b;
+            border-radius: 4px;
+            margin: 0 5px;
+        }
+
+        .pagination-container button:hover {
+            background-color: #a35d5d;
+        }
+
+        #currentPage {
+            margin: 0 10px;
+        }
+
         .modal-dialog.modal-lg {
             max-width: 90%;
         }
@@ -17,7 +42,7 @@
 
         .foods-item-form .form-group {
             flex: 1;
-            min-width: 200px; /* Adjust based on the minimum width you want for each input group */
+            min-width: 200px;
         }
 
         .imagePreview {
@@ -247,12 +272,20 @@
         </div>
     </div>
 </div>
+<div class="pagination-container">
+    <button id="prevPage" disabled>Previous</button>
+    <span id="currentPage">1</span>
+    <button id="nextPage">Next</button>
+</div>
 
 
 @include('admin.adminscript')
 
 <script>
     $(document).ready(function () {
+        var currentPage = 1;
+        var perPage = 10;
+
         $('#foodModal').modal({
             backdrop: 'static',
             keyboard: false,
@@ -267,23 +300,45 @@
 
         fetchFoodItems();
 
-        function fetchFoodItems() {
+        function fetchFoodItems(page=1) {
             $.ajax({
                 type: "GET",
                 url: "/fetch-food-items",
                 dataType: "json",
+                data: {
+                    page: page,
+                    per_page: perPage
+                },
                 success: function (response) {
                     console.log("Fetched food items:", response.food);
                     $('tbody').html("");
                     $.each(response.food, function (key, item) {
                         appendFoodItemToTable(item);
                     });
+                    updatePagination(response.current_page, response.last_page);
                 },
                 error: function (xhr, status, error) {
                     console.error("Error fetching food items:", error);
                 }
             });
         }
+        function updatePagination(currentPage, lastPage) {
+            $('#currentPage').text(currentPage);
+            $('#prevPage').prop('disabled', currentPage === 1);
+            $('#nextPage').prop('disabled', currentPage === lastPage);
+        }
+
+        $('#prevPage').on('click', function () {
+            if (currentPage > 1) {
+                currentPage--;
+                fetchFoodItems(currentPage);
+            }
+        });
+
+        $('#nextPage').on('click', function () {
+            currentPage++;
+            fetchFoodItems(currentPage);
+        });
 
         $('.foodsclose').on('click', function(){
             $('#food_items_container').children('.foods-item-form').not(':first').hide();

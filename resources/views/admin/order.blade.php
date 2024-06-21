@@ -115,7 +115,6 @@
 <div class="container-scroller">
     @include('admin.navbar')
     <div id="orderNotifications">
-        <!-- Notification area where new order notifications will appear -->
     </div>
 
     <div style="margin: 100px; width: 2550px;">
