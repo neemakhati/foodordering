@@ -16,11 +16,11 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         Category::factory(10)->create();
-        User::factory(10)->create();
+        User::factory(20)->create();
 
-        Food::factory(30)->create();
+        Food::factory(50)->create();
 
-        $orders = Order::factory(50)->create();
+        $orders = Order::factory(100)->create();
 
         foreach ($orders as $order) {
             $user = User::where('name', $order->username)->first();

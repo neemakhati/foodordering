@@ -45,6 +45,7 @@ class OrderFactory extends Factory
             'quantity' => $totalQuantity,
             'food_details' => json_encode($foodDetails),
             'is_read' => $this->faker->boolean,
+            'created_at' => $this->faker->dateTimeThisYear(),
         ];
     }
 }

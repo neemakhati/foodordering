@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     @include('admin.admincss')
-    <style>
-        body {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <style>
+        .container {
+            margin-top: 10px;
+            margin-left: -50px;
         }
         table {
             width: 500px;
@@ -77,6 +80,7 @@
                 </tbody>
             </table>
         </div>
+
     </div>
 </div>
 
@@ -97,12 +101,12 @@
             .then(response => response.json())
             .then(data => {
                 let tableHTML = `
-                    <h1 style="text-align: center; margin-top: 20px;">Top 10 Most Ordered Foods</h1>
+                    <h1 style="text-align: center;">Top 10 Most Ordered Foods</h1>
                     <table class="table">
                         <thead>
                         <tr>
-                            <th style="color: white;">Food Name</th>
-                            <th style="color: white;">Orders Count</th>
+                            <th>Food Name</th>
+                            <th>Orders Count</th>
                         </tr>
                         </thead>
                         <tbody>`;
@@ -127,12 +131,12 @@
             .then(response => response.json())
             .then(data => {
                 let tableHTML = `
-                    <h1 style="text-align: center; margin-top: 20px;">Top 10 Most Active Users</h1>
+                    <h1 style="text-align: center;">Top 10 Most Active Users</h1>
                     <table class="table">
                         <thead>
                         <tr>
-                            <th style="color: white;">User Name</th>
-                            <th style="color: white;">Order Count</th>
+                            <th>User Name</th>
+                            <th>Order Count</th>
                         </tr>
                         </thead>
                         <tbody>`;
@@ -150,6 +154,7 @@
             })
             .catch(error => console.error('Error fetching data:', error));
     });
+
 </script>
 
 @include('admin.adminscript')

@@ -52,8 +52,11 @@ Route::get('/deletecategory/{id}', [AdminController::class, 'deletecategory']);
 Route::get('/updatecategory/{id}', [AdminController::class, 'updatecategory']);
 Route::post('/updatecat/{id}', [AdminController::class, 'updatecat']);
 Route::get('/analytics', [AdminController::class,'analytics']);
+Route::get('/chart', [AdminController::class,'chart']);
 Route::get('/getTopUsers', [AdminController::class,'getTopUsers']);
 Route::get('/getTopFoods', [AdminController::class,'getTopFoods']);
+Route::get('/getOrderDataByDayOfWeek', [AdminController::class,'getOrderDataByDayOfWeek']);
+Route::get('/getOrdersThisYear', [AdminController::class,'getOrdersThisYear']);
 
 Route::get('/orders', [AdminController::class,'orders']);
 Route::get('/orders/count', [AdminController::class, 'getOrderCount']);

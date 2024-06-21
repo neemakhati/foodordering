@@ -14,6 +14,50 @@ use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
+    public function chart()
+    {
+        return view('admin.order_chart');
+    }
+    public function getOrderDataByDayOfWeek()
+    {
+        $startOfWeek = now()->startOfWeek()->format('Y-m-d');
+        $endOfWeek = now()->endOfWeek()->format('Y-m-d');
+
+        $ordersByDayOfWeek = Order::selectRaw('DAYNAME(created_at) as day_of_week, COUNT(*) as order_count')
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->groupBy('day_of_week')
+            ->get();
+
+        $orderCounts = [
+            'Sunday' => 0,
+            'Monday' => 0,
+            'Tuesday' => 0,
+            'Wednesday' => 0,
+            'Thursday' => 0,
+            'Friday' => 0,
+            'Saturday' => 0,
+        ];
+
+        foreach ($ordersByDayOfWeek as $order) {
+            $orderCounts[$order->day_of_week] = $order->order_count;
+        }
+
+        return response()->json([
+            'orderCounts' => $orderCounts,
+        ]);
+    }
+    public function getOrdersThisYear()
+    {
+        $orderCounts = Order::whereYear('created_at', now()->year)
+            ->selectRaw('MONTHNAME(created_at) as month, COUNT(*) as order_count')
+            ->groupBy('month')
+            ->get()
+            ->pluck('order_count', 'month')
+            ->toArray();
+
+        return response()->json(['orderCounts' => $orderCounts]);
+    }
+
     public function analytics()
     {
         $topFoods = Food::select('food.id', 'food.title', DB::raw('count(*) as orders_count'))
