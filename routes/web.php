@@ -33,6 +33,8 @@ Route::middleware([EnsureEmailIsVerified::class])->group(function () {
     Route::post('/ordermail', [HomeController::class, 'ordermail']);
     Route::get('/myorderlist', [HomeController::class, 'myorderlist']);
     Route::get('/category/{slug}',[CategoryController::class, 'bakery'])->name('category.view');
+    Route::get('/food/{id}', [HomeController::class, 'show']);
+    Route::post('/review', [HomeController::class, 'review']);
 });
 
 Route::get('/test',[HomeController::class,'testfunc']);
@@ -78,9 +80,11 @@ Route::post('/uploadfood', [AdminController::class, 'uploadFood']);
 Route::post('/uploadfoods', [AdminController::class, 'uploadFoods']);
 
 
+
 Route::delete('/deletefood/{id}', [AdminController::class, 'destroy'])->name('deletefood');
 Route::get('/fetch-food-item/{id}', [AdminController::class, 'fetchFoodItem']);
 Route::post('/updatefood/{id}', [AdminController::class, 'updateFood']);
+Route::post('/mark-order-read/{id}',[AdminController::class, 'markRead']);
 
 Route::get('/appetizer',[CategoryController::class, 'appetizer']);
 Route::get('/dessert',[CategoryController::class, 'dessert']);

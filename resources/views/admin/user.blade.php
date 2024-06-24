@@ -99,6 +99,7 @@
             @endforeach
             </tbody>
         </table>
+
         <div class="pagination-wrapper">
             @if ($data->hasPages())
                 <nav>

@@ -59,53 +59,7 @@
             border-color: #ddd;
             cursor: not-allowed;
         }
-        .bell-icon {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            cursor: pointer;
-            font-size: 24px;
-            color: #fb5849;
-        }
-        .bell-icon .badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background-color: #e14b3b;
-            color: white;
-            border-radius: 50%;
-            padding: 5px 10px;
-            font-size: 12px;
-        }
-        .dropdown-menu {
-            display: none;
-            position: fixed;
-            top: 60px;
-            right: 20px;
-            background-color: #d5bcbc;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            width: 300px;
-            max-height: 400px;
-            overflow-y: auto;
-            z-index: 1000;
-        }
-        .dropdown-menu.active {
-            display: block;
-        }
-        .dropdown-menu ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .dropdown-menu li {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        .dropdown-menu li:last-child {
-            border-bottom: none;
-        }
+
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
@@ -114,9 +68,7 @@
 <body>
 <div class="container-scroller">
     @include('admin.navbar')
-    <div id="orderNotifications">
-    </div>
-
+    @include('notifyorder')
     <div style="margin: 100px; width: 2550px;">
         <table>
             <thead>
@@ -149,6 +101,7 @@
             @endforeach
             </tbody>
         </table>
+
         <div class="pagination-wrapper">
             @if ($data->hasPages())
                 <nav>

@@ -12,8 +12,7 @@
 <title>Klassy Cafe - Restaurant HTML Template</title>
 
 @include('homecss')
-    <style>
-    </style>
+
 
     </head>
     <body>
@@ -28,7 +27,7 @@
                         <div class="owl-menu-item owl-carousel owl-loaded owl-drag">
                             @foreach ($food as $data)
                                 <div class="owl-item" style="height: 500px; width: 200px; margin: 20px 10px; ">
-                                    <div class="item" style="height: 500px; width: 200px; margin: 20px 10px; ">
+                                    <div class="item" style="height: 500px; width: 200px; margin: 20px 10px; " onclick="window.location.href='/food/{{ $data->id }}'">
                                         <div class="card card2" style="background-image:url('/foodimage/{{ $data->image }}'); background-repeat: no-repeat; background-position: center; background-size: cover; width: 100%; height: 300px; overflow: hidden; position: relative;">
                                             <button class="price" style="position: absolute; top: 60px; left: 0px; background-color: #fb5849; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; height: auto;">
                                                 {{ $data->price }}

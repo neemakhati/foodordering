@@ -10,6 +10,7 @@ use App\Models\Cart;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Category;
+use App\Models\Review;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactFormMail;
 use App\Mail\VerificationMail;
@@ -21,6 +22,30 @@ use App\Events\OrderPlaced;
 
 class HomeController extends Controller
 {
+    public function show($id)
+    {
+        $categories = Category::all();
+        $food = Food::findOrFail($id);
+        $comments = Review::where('food_id', $id)->get();
+        return view('food-detail', compact('food', 'categories','comments'));
+    }
+
+    public function review(Request $request)
+    {
+        $request->validate([
+            'rate' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string',
+        ]);
+
+        $review = Review::create([
+            'user_id' => auth()->id(),
+            'food_id' => $request->food_id,
+            'rate' => $request->rate,
+            'comment' => $request->comment,
+        ]);
+
+        return response()->json(['success' => true, 'review' => $review]);
+    }
     public function myorderlist(Request $request)
     {
 
@@ -153,6 +178,7 @@ class HomeController extends Controller
             $order->phone = $request->input('phone');
             $order->address = $request->input('address');
             $order->status = 'ordered';
+            $order->is_read = 0;
 
             $totalPrice = 0;
             $foodDetails = [];
@@ -293,23 +319,15 @@ class HomeController extends Controller
             'adminpassword' => 'required|min:6|max:255'
         ]);
 
-        // Attempt to authenticate the user
         if (auth()->attempt(['email' => $incomingData['adminemail'], 'password' => $incomingData['adminpassword']])) {
-            // Check if the authenticated user is an admin
-            if (auth()->user()->usertype == "1") { // Assuming '1' is for admin
-                // Regenerate session to prevent session fixation attacks
-                $request->session()->regenerate();
 
-                // Redirect to the admin home page
+            if (auth()->user()->usertype == "1") {
+                $request->session()->regenerate();
                 return redirect('/redirects');
             }
-
-            // If the user is not an admin, log them out
             auth()->logout();
             return redirect()->back()->with('error', 'Only admins can log in from this page.');
         }
-
-        // Authentication failed, return the admin signin form with an error message
         return view('signin')->with('error', 'Invalid credentials');
     }
     public function redirects(){

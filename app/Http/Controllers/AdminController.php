@@ -22,6 +22,7 @@ class AdminController extends Controller
     {
         $startOfWeek = now()->startOfWeek()->format('Y-m-d');
         $endOfWeek = now()->endOfWeek()->format('Y-m-d');
+//        $endOfWeek = now()->subWeek()->endOfWeek()->format('Y-m-d');
 
         $ordersByDayOfWeek = Order::selectRaw('DAYNAME(created_at) as day_of_week, COUNT(*) as order_count')
             ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
@@ -92,6 +93,19 @@ class AdminController extends Controller
 
         return response()->json(['topUsers' => $topUsers]);
     }
+    public function markRead($id, Request $request)
+    {
+        $order = Order::find($id);
+        if ($order) {
+            $order->is_read = $request->input('is_read');
+            $order->save();
+
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false]);
+    }
+
 
     public function updateFood(Request $request, $id)
     {

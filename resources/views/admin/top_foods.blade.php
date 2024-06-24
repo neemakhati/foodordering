@@ -56,6 +56,7 @@
 <body>
 <div class="container-scroller">
     @include('admin.navbar')
+    @include('notifyorder')
     <div class="container">
         <div class="button-container">
             <button id="show-foods-btn" class="button active">Foods</button>
@@ -105,8 +106,8 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <th>Food Name</th>
-                            <th>Orders Count</th>
+                            <th style="color: white;">Food Name</th>
+                            <th style="color: white;">Orders Count</th>
                         </tr>
                         </thead>
                         <tbody>`;
@@ -135,8 +136,8 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <th>User Name</th>
-                            <th>Order Count</th>
+                            <th style="color: white;">User Name</th>
+                            <th style="color: white;">Order Count</th>
                         </tr>
                         </thead>
                         <tbody>`;

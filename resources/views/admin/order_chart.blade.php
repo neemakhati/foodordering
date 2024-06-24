@@ -64,6 +64,7 @@
 <body>
 <div class="container-scroller">
     @include('admin.navbar')
+    @include('notifyorder')
     <div class="container">
         <div class="button-container">
             <button id="show-week-btn" class="button active" onclick="fetchOrderDataByDayOfWeek()">Week</button>

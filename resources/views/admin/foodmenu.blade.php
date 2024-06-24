@@ -272,6 +272,7 @@
         </div>
     </div>
 </div>
+
 <div class="pagination-container">
     <button id="prevPage" disabled>Previous</button>
     <span id="currentPage">1</span>

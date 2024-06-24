@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Broadcasting\BroadcastServiceProvider;
+
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,5 +24,6 @@ class AppServiceProvider extends ServiceProvider
     {
         // Register the BroadcastServiceProvider
         $this->app->register(BroadcastServiceProvider::class);
+        $this->app->register(ViewServiceProvider::class);
     }
 }
